@@ -1,0 +1,36 @@
+# Archivos de Visual Studio
+.vs/
+*.suo
+*.user
+*.db
+
+# Archivos de compilación
+bin/
+obj/
+debug/
+release/
+
+# Configuración específica del IDE
+*.vscode/
+*.idea/
+
+# Dependencias de usuario
+.env
+
+# Archivos de configuración de Visual Studio
+ToDo-Backend-CA-AplicationLayer/bin/
+ToDo-Backend-CA-AplicationLayer/obj/
+ToDo-Backend-CA-EnterpriseLayer/bin/
+ToDo-Backend-CA-EnterpriseLayer/obj/
+ToDo-Backend-CA-IntefaceAdapters-Presenters/bin/
+ToDo-Backend-CA-IntefaceAdapters-Presenters/obj/
+ToDo-Backend-CA-InterfaceAdapters-Data/bin/
+ToDo-Backend-CA-InterfaceAdapters-Data/obj/
+ToDo-Backend-FrameworksDrivers-API/bin/
+ToDo-Backend-FrameworksDrivers-API/obj/
+ToDo-Backend-InterfaceAdapters-Mappers/bin/
+ToDo-Backend-InterfaceAdapters-Mappers/obj/
+ToDo-Backend-InterfaceAdapters-Models/bin/
+ToDo-Backend-InterfaceAdapters-Models/obj/
+ToDo-Backend-InterfaceAdapters-Repository/bin/
+ToDo-Backend-InterfaceAdapters-Repository/obj/

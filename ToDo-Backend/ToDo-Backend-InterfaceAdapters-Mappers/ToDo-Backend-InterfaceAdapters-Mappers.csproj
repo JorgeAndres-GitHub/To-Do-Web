@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>ToDo_Backend_InterfaceAdapters_Mappers</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ToDo-Backend-CA-AplicationLayer\ToDo-Backend-CA-AplicationLayer.csproj" />
+    <ProjectReference Include="..\ToDo-Backend-CA-EnterpriseLayer\ToDo-Backend-CA-EnterpriseLayer.csproj" />
+    <ProjectReference Include="..\ToDo-Backend-InterfaceAdapters-Models\ToDo-Backend-InterfaceAdapters-Models.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+@ToDo-Backend-FrameworksDrivers-API_HostAddress = https://localhost:7142
+
+###
+
+POST {{ToDo-Backend-FrameworksDrivers-API_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  //TaskRequestDTO
+}
+
+###
+
+POST {{ToDo-Backend-FrameworksDrivers-API_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  //TaskRequestDTO
+}
+
+###

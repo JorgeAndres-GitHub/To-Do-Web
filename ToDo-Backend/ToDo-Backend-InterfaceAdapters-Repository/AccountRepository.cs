@@ -1,0 +1,102 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ToDo_Backend_CA_AplicationLayer.Exceptions;
+using ToDo_Backend_CA_AplicationLayer.Interfaces.User;
+using ToDo_Backend_CA_EnterpriseLayer;
+using ToDo_Backend_CA_InterfaceAdapters_Data;
+using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
+using ToDo_Backend_InterfaceAdapters_Mappers.Services;
+using ToDo_Backend_InterfaceAdapters_Models;
+
+namespace ToDo_Backend_InterfaceAdapters_Repository
+{
+    public class AccountRepository : IAccountRepository<UserEntity, AuthResult>
+    {
+        private readonly AppDbContext _context;
+
+        public AccountRepository(AppDbContext context) => _context = context;        
+
+        public async Task CreateUserAsync(UserEntity user)
+        {
+            var cedulaEmailExist = await _context.Users.FirstOrDefaultAsync(x => x.IdentificationNumber == user.IdentificationNumber || x.Email == user.Email);
+            
+            if (cedulaEmailExist != null)
+                throw new InvalidUserCreationException("User already exists.");
+
+            var passwordHash = HashPassword.HashPasswordBD(user.Password); 
+
+            var userModel = new UserModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdentificationNumber = user.IdentificationNumber,
+                Country = user.Country,
+                City = user.City,
+                Phone = user.Phone,
+                Email = user.Email,
+                Password = passwordHash,
+                CreatedTasks = user.CreatedTasks,
+                CompletedTasks = user.CompletedTasks,
+                PublishedTasks = user.PublishedTasks,
+                IsEmailConfirmed = user.IsEmailConfirmed,
+                VerificationCode = user.VerificationCode,
+                UpdateConfirmationCode = user.UpdateConfirmationCode,
+                IdRol = user.IdRol
+            };            
+
+            await _context.Users.AddAsync(userModel);
+            await _context.SaveChangesAsync();            
+        }
+
+        public Task<AuthResult> DeleteUser(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthResult> GetUserByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthResult> GetUserById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<AuthResult> LoginAsync(string email, string password)
+        {
+            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (existingUser == null)
+                return new AuthResult{
+                    Errors = new List<string> { "Invalid Payload" },
+                    Result = false
+                };
+
+            password = HashPassword.HashPasswordBD(password);
+
+            var checkUserAndPass = existingUser.Password == password; 
+            if(!checkUserAndPass)
+                return new AuthResult
+                {
+                    Errors = new List<string> { "Invalid Credentials" },
+                    Result = false
+                };
+
+            return new AuthResult
+            {
+                User = existingUser,
+                Result = true
+            };
+        }
+
+        public Task<AuthResult> UpdateUser(UserEntity user)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
