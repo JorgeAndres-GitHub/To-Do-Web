@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
+using ToDo_Backend_CA_AplicationLayer.Interfaces;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.User;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.UserAplicationInterfaces;
@@ -86,7 +87,7 @@ builder.Services.AddScoped<MarkAsCompletedUseCase>();
 builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
 
 builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();
-builder.Services.AddScoped<IAccountMapper<UserRegistrationRequestDTO, UserEntity>, UserMapper>();
+builder.Services.AddScoped<IMapper<UserRegistrationRequestDTO, UserEntity>, UserMapper>();
 builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPresenter>();
 builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDTO, AuthResult>>();
 builder.Services.AddScoped<LoginUseCase<AuthResult>>();
