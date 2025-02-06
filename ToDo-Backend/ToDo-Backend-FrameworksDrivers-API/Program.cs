@@ -87,8 +87,11 @@ builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
 
 builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();
 builder.Services.AddScoped<IAccountMapper<UserRegistrationRequestDTO, UserEntity>, UserMapper>();
+builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPresenter>();
 builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDTO, AuthResult>>();
 builder.Services.AddScoped<LoginUseCase<AuthResult>>();
+builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult, UserViewModel>>();
+
 
 
 

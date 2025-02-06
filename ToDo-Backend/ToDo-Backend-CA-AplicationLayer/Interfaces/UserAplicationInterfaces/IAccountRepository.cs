@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDo_Backend_CA_EnterpriseLayer;
 
 namespace ToDo_Backend_CA_AplicationLayer.Interfaces.User
 {
-    public interface IAccountRepository<TEntity, TOutput>
+    public interface IAccountRepository<TEntity, TAuthenticationOutput>
     {
-        Task<TOutput> GetUserById(int id);
-        Task<TOutput> GetUserByEmail(string email);
+        Task<TEntity> GetUserById(int id);
+        Task<TAuthenticationOutput> GetUserByEmail(string email);   
         Task CreateUserAsync(TEntity user);
-        Task<TOutput> LoginAsync(string email, string password);
-        Task<TOutput> UpdateUser(TEntity user);
-        Task<TOutput> DeleteUser(int id);
+        Task<TAuthenticationOutput> LoginAsync(string email, string password);
+        Task<TAuthenticationOutput> UpdateUser(TEntity user);
+        Task<TAuthenticationOutput> DeleteUser(int id);
     }
 }

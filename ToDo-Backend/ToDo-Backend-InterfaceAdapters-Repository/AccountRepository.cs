@@ -63,9 +63,31 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             throw new NotImplementedException();
         }
 
-        public Task<AuthResult> GetUserById(int id)
+        public async Task<UserEntity> GetUserById(int id)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                throw new KeyNotFoundException("User not found.");
+
+            return new UserEntity
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdentificationNumber = user.IdentificationNumber,
+                Country = user.Country,
+                City = user.City,
+                Phone = user.Phone,
+                Email = user.Email,
+                Password = user.Password,
+                CreatedTasks = user.CreatedTasks,
+                CompletedTasks = user.CompletedTasks,
+                PublishedTasks = user.PublishedTasks,
+                IsEmailConfirmed = user.IsEmailConfirmed,
+                VerificationCode = user.VerificationCode,
+                UpdateConfirmationCode = user.UpdateConfirmationCode,
+                IdRol = user.IdRol
+            };
         }
 
         public async Task<AuthResult> LoginAsync(string email, string password)
