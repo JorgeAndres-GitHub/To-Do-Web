@@ -10,6 +10,7 @@ using ToDo_Backend_CA_AplicationLayer.UseCases.TaskUseCases;
 using ToDo_Backend_CA_EnterpriseLayer;
 using ToDo_Backend_CA_IntefaceAdapters_Presenters.Views;
 using ToDo_Backend_FrameworksDrivers_API.Middlewares;
+using ToDo_Backend_FrameworksDrivers_API.Services;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
 
 namespace ToDo_Backend_FrameworksDrivers_API.Controllers
@@ -48,11 +49,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskRequestDTO task)
         {
-            var userIdClaim = User.FindFirst("Id");
-            if(userIdClaim == null)
-                return Unauthorized("User not authenticated");
-
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             var taskId = await _addTaskUseCase.ExecuteAsync(task, userId);
             return CreatedAtAction(nameof(GetById), new { id = taskId }, null);
@@ -61,11 +58,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             var task = await _getTaskUseCase.ExecuteAsync(id, userId);
             return Ok(task);            
@@ -82,10 +75,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpGet("getAllUserTasks")]
         public async Task<IActionResult> GetAllUserTasks()
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             var tasks = await _getAllUserTasksUseCase.ExecuteAsync(userId);
             return Ok(tasks); 
@@ -94,10 +84,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             await _deleteTaskUseCase.ExecuteAsync(id, userId);
             return NoContent();
@@ -106,10 +93,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpDelete("bulk")]
         public async Task<IActionResult> DeleteMultipleTasks([FromBody] BulkDeleteRequestDTO request)
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             await _deleteMultipleTasksUseCase.ExecuteAsync(request.Ids, userId);
             return NoContent();            
@@ -118,10 +102,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskRequestDTO request)
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             await _updateTaskUseCase.ExecuteAsync(request, userId);
             return NoContent();            
@@ -130,10 +111,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> MarkAsCompletedTask(int id)
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             await _markAsCompletedUseCase.ExecuteAsync(id, userId);
             return NoContent();            

@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases;
 using ToDo_Backend_CA_EnterpriseLayer;
 using ToDo_Backend_CA_IntefaceAdapters_Presenters.Views;
+using ToDo_Backend_FrameworksDrivers_API.Services;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
+using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.UserRequests;
 
 namespace ToDo_Backend_FrameworksDrivers_API.Controllers
 {
@@ -23,14 +25,19 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var userIdClaim = User.FindFirst("Id");
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated");
-
-            int userId = int.Parse(userIdClaim.Value);
+            var userId = GetUserIdService.GetUserId(User);
 
             var user = await _getProfileUseCase.ExecuteAsync(userId);
             return Ok(user);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateUserRequestDTO request)
+        {
+            var userId = GetUserIdService.GetUserId(User);
+
+            var user = await _getProfileUseCase.ExecuteAsync(userId);
+            return NoContent();
         }
     }
 }

@@ -2,9 +2,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ToDo_Backend_FrameworksDrivers_API.Configuration;
 using ToDo_Backend_InterfaceAdapters_Models;
 
-namespace ToDo_Backend_FrameworksDrivers_API.Configuration
+namespace ToDo_Backend_FrameworksDrivers_API.Services
 {
     public static class GenerateTokenService
     {

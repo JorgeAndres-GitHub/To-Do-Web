@@ -22,7 +22,7 @@ using ToDo_Backend_FrameworksDrivers_API.Validators.Task;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.User;
-using ToDo_Backend_InterfaceAdapters_Mappers.Mappers;
+using ToDo_Backend_InterfaceAdapters_Mappers.Mappers.TaskMappers;
 using ToDo_Backend_InterfaceAdapters_Mappers.Mappers.UserMappers;
 using ToDo_Backend_InterfaceAdapters_Models;
 using ToDo_Backend_InterfaceAdapters_Repository;
