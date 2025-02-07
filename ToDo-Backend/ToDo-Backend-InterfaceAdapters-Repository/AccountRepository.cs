@@ -116,9 +116,14 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             };
         }
 
-        public Task<AuthResult> UpdateUser(UserEntity user)
-        {
-            throw new NotImplementedException();
+        public Task<AuthResult> UpdateUser(int userId)
+        {                       
+            var userModel = await _context.Users.FindAsync(userId);
+            if(userModel = null)
+                throw new KeyNotFoundException("No user found for the specified id.");
+
+            
+            
         }
     }
 }

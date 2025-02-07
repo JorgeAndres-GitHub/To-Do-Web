@@ -92,8 +92,7 @@ builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPre
 builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDTO, AuthResult>>();
 builder.Services.AddScoped<LoginUseCase<AuthResult>>();
 builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult, UserViewModel>>();
-
-
+builder.Services.AddScoped<UpdateProfileUseCase<AuthResult>>();
 
 
 var app = builder.Build();

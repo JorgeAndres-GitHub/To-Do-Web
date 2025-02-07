@@ -16,10 +16,12 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
     public class ClientController : ControllerBase
     {
         private readonly GetProfileUseCase<UserEntity, AuthResult, UserViewModel> _getProfileUseCase;
+        private readonly UpdateProfileUseCase<> _updateProfileUseCase;
 
-        public ClientController(GetProfileUseCase<UserEntity, AuthResult, UserViewModel> getProfileUseCase)
+        public ClientController(GetProfileUseCase<UserEntity, AuthResult, UserViewModel> getProfileUseCase, UpdateProfileUseCase updateProfileUseCase)
         {
             _getProfileUseCase = getProfileUseCase;
+            _updateProfileUseCase = updateProfileUseCase;
         }
 
         [HttpGet]
@@ -36,7 +38,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         {
             var userId = GetUserIdService.GetUserId(User);
 
-            var user = await _getProfileUseCase.ExecuteAsync(userId);
+            await _updateProfileUseCase.ExecuteAsync(userId);
+
             return NoContent();
         }
     }
