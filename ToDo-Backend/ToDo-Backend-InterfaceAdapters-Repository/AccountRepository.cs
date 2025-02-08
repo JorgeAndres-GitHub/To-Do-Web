@@ -88,6 +88,8 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                 UpdateConfirmationCode = user.UpdateConfirmationCode,
                 IdRol = user.IdRol
             };
+
+            
         }
 
         public async Task<AuthResult> LoginAsync(string email, string password)
@@ -116,14 +118,23 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             };
         }
 
-        public Task<AuthResult> UpdateUser(int userId)
-        {                       
-            var userModel = await _context.Users.FindAsync(userId);
-            if(userModel = null)
-                throw new KeyNotFoundException("No user found for the specified id.");
+        public async Task UpdateUser(UserEntity userEntity)
+        {
+            var userModel = await _context.Users.FindAsync(userEntity.Id);
 
+            if(userEntity == null)
+                throw new KeyNotFoundException("User not found.");
+
+            userModel.FirstName = userEntity.FirstName;
+            userModel.LastName = userEntity.LastName;
+            userModel.IdentificationNumber = userEntity.IdentificationNumber;
+            userModel.Country = userEntity.Country;
+            userModel.City = userEntity.City;
+            userModel.Phone = userEntity.Phone;
+            userModel.Email = userEntity.Email;
+            userModel.IdRol = userEntity.IdRol;
             
-            
+            await _context.SaveChangesAsync();
         }
     }
 }

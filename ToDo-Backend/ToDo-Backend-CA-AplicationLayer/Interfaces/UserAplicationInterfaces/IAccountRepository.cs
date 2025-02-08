@@ -13,7 +13,7 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.User
         Task<TAuthenticationOutput> GetUserByEmail(string email);   
         Task CreateUserAsync(TEntity user);
         Task<TAuthenticationOutput> LoginAsync(string email, string password);
-        Task<TAuthenticationOutput> UpdateUser(TEntity user);
+        Task UpdateUser(TEntity id);
         Task<TAuthenticationOutput> DeleteUser(int id);
     }
 }

@@ -22,6 +22,7 @@ using ToDo_Backend_FrameworksDrivers_API.Validators.Task;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.User;
+using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.UserRequests;
 using ToDo_Backend_InterfaceAdapters_Mappers.Mappers.TaskMappers;
 using ToDo_Backend_InterfaceAdapters_Mappers.Mappers.UserMappers;
 using ToDo_Backend_InterfaceAdapters_Models;
@@ -31,7 +32,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
 
@@ -91,7 +92,8 @@ builder.Services.AddScoped<IMapper<UserRegistrationRequestDTO, UserEntity>, User
 builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPresenter>();
 builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDTO, AuthResult>>();
 builder.Services.AddScoped<LoginUseCase<AuthResult>>();
-builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult, UserViewModel>>();
+builder.Services.AddScoped<GetProfileViewModelUseCase<UserEntity, AuthResult, UserViewModel>>();
+builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult>>();
 builder.Services.AddScoped<UpdateProfileUseCase<AuthResult>>();
 
 
