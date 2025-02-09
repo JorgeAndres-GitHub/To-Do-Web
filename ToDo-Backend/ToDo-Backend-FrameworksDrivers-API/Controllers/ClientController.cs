@@ -21,14 +21,17 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly GetProfileViewModelUseCase<UserEntity, AuthResult, UserViewModel> _getProfileViewModelUseCase;
         private readonly UpdateProfileUseCase<AuthResult> _updateProfileUseCase;
         private readonly GetProfileUseCase<UserEntity, AuthResult> _getProfileUseCase;
+        private readonly DeleteProfileUseCase<AuthResult> _deleteProfileUseCase;
 
         public ClientController(GetProfileViewModelUseCase<UserEntity, AuthResult, UserViewModel> getProfileViewModelUseCase, 
             UpdateProfileUseCase<AuthResult> updateProfileUseCase,
-            GetProfileUseCase<UserEntity, AuthResult> getProfileUseCase)
+            GetProfileUseCase<UserEntity, AuthResult> getProfileUseCase,
+            DeleteProfileUseCase<AuthResult> deleteProfileUseCase)
         {
             _getProfileViewModelUseCase = getProfileViewModelUseCase;
             _getProfileUseCase = getProfileUseCase;
             _updateProfileUseCase = updateProfileUseCase;
+            _deleteProfileUseCase = deleteProfileUseCase;
         }
 
         [HttpGet]
@@ -39,8 +42,6 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             var user = await _getProfileViewModelUseCase.ExecuteAsync(userId);
             return Ok(user);
         }
-
-        // ... existing code ...
 
         [HttpPatch]
         public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UpdateUserRequestDTO> patchDoc)
@@ -86,5 +87,14 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             await _updateProfileUseCase.ExecuteAsync(user);
             return NoContent();
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProfile()
+        {
+            var userId = GetUserIdService.GetUserId(User);
+            await _deleteProfileUseCase.ExecuteAsync(userId);            
+            return NoContent();
+        }
+
     }
 }

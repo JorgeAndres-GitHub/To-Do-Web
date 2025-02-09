@@ -95,6 +95,7 @@ builder.Services.AddScoped<LoginUseCase<AuthResult>>();
 builder.Services.AddScoped<GetProfileViewModelUseCase<UserEntity, AuthResult, UserViewModel>>();
 builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult>>();
 builder.Services.AddScoped<UpdateProfileUseCase<AuthResult>>();
+builder.Services.AddScoped<DeleteProfileUseCase<AuthResult>>();
 
 
 var app = builder.Build();

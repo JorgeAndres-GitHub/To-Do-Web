@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using ToDo_Backend_CA_AplicationLayer.Exceptions;
+using ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.User;
 using ToDo_Backend_CA_EnterpriseLayer;
 using ToDo_Backend_CA_InterfaceAdapters_Data;
@@ -17,8 +19,13 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
     public class AccountRepository : IAccountRepository<UserEntity, AuthResult>
     {
         private readonly AppDbContext _context;
+        private readonly ITaskRepository<TaskItem> _taskRepository;
 
-        public AccountRepository(AppDbContext context) => _context = context;        
+        public AccountRepository(AppDbContext context, ITaskRepository<TaskItem> taskRepository)
+        {
+            _context = context;
+            _taskRepository = taskRepository;
+        }   
 
         public async Task CreateUserAsync(UserEntity user)
         {
@@ -53,9 +60,34 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             await _context.SaveChangesAsync();            
         }
 
-        public Task<AuthResult> DeleteUser(int id)
+        public async Task DeleteUser(int id)
         {
-            throw new NotImplementedException();
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var tasks = await _taskRepository.GetAllUserTasksAsync(id);
+
+                    foreach (var task in tasks)
+                    {
+                        if (!task.IsPublic)
+                            await _taskRepository.DeleteUserTaskAsync(task.Id, id);
+                    }
+
+                    var user = await _context.Users.FindAsync(id);
+                    if (user == null)
+                        throw new KeyNotFoundException("User not found.");
+                    _context.Users.Remove(user);
+                    await _context.SaveChangesAsync();                  
+                                       
+                    await transaction.CommitAsync();                   
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
         }
 
         public Task<AuthResult> GetUserByEmail(string email)

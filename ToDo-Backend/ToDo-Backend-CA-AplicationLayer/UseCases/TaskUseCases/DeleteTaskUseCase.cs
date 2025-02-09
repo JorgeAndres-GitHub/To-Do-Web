@@ -17,9 +17,6 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.TaskUseCases
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(int id, int userId)
-        {
-            await _repository.DeleteUserTaskAsync(id, userId);
-        }
+        public async Task ExecuteAsync(int id, int userId) => await _repository.DeleteUserTaskAsync(id, userId);
     }
 }
