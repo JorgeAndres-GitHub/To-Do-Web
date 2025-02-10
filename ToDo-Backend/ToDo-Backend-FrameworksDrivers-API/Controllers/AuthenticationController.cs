@@ -1,17 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCase;
 using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases;
+using ToDo_Backend_CA_EnterpriseLayer;
+using ToDo_Backend_CA_InterfaceAdapters_Data;
 using ToDo_Backend_FrameworksDrivers_API.Configuration;
 using ToDo_Backend_FrameworksDrivers_API.Services;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.User;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.UserRequests;
+using ToDo_Backend_InterfaceAdapters_Models;
 
 namespace ToDo_Backend_FrameworksDrivers_API.Controllers
 {
@@ -22,18 +29,27 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly RegisterUseCase<UserRegistrationRequestDTO, AuthResult> _registerUseCase;
         private readonly LoginUseCase<AuthResult> _loginUseCase;
         private readonly JwtConfig _jwtConfig;
+        private readonly IEmailSender _emailSender;
+        private readonly AppDbContext _context;
 
-        public AuthenticationController(RegisterUseCase<UserRegistrationRequestDTO, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase, IOptions<JwtConfig> jwtConfig)
+        public AuthenticationController(RegisterUseCase<UserRegistrationRequestDTO, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase,
+            IOptions<JwtConfig> jwtConfig, IEmailSender emailSender,
+            AppDbContext context)
         {
             _registerUseCase = registerUseCase;
             _loginUseCase = loginUseCase;
             _jwtConfig = jwtConfig.Value;
+            _emailSender = emailSender;
+            _context = context;
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDTO registerRequest)
         {
-            await _registerUseCase.ExecuteAsync(registerRequest);
+            var userAuthResult = await _registerUseCase.ExecuteAsync(registerRequest);
+
+            await SendVerificationEmail(userAuthResult.User);
+
             return Ok(new AuthResult
             {
                 Result = true
@@ -51,6 +67,45 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             success.Token = token;
 
             return Ok(success);
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
+                return BadRequest(new AuthResult
+                {
+                    Result = false,
+                    Errors = new List<string> { "Invalid email confirmation url" }
+                }
+                );
+
+            var user = await _context.Users.FindAsync(int.Parse(userId));
+
+            if (user == null)
+                return NotFound($"Unable to load user with ID '{userId}'.");
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+
+            user.IsEmailConfirmed = true;
+            await _context.SaveChangesAsync();
+
+            return Ok("Thank you for confirming your email.");
+        }
+
+
+        private async Task SendVerificationEmail(UserModel user)
+        {
+            var verificationCode = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            verificationCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(verificationCode));
+
+            // example : https://localhost:8080/authentication/verifyEmail/userId=exampleuserId&code=exampleCode
+            var callbackUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ConfirmEmail", controller: "Authentication", new { UserId = user.Id, code = verificationCode })}";
+
+            var emailBody = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
+
         }
     }
 }

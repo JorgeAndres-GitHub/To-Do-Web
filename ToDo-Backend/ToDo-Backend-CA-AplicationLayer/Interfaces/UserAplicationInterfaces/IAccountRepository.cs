@@ -11,7 +11,7 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.User
     {
         Task<TEntity> GetUserById(int id);
         Task<TAuthenticationOutput> GetUserByEmail(string email);   
-        Task CreateUserAsync(TEntity user);
+        Task<TAuthenticationOutput> CreateUserAsync(TEntity user);
         Task<TAuthenticationOutput> LoginAsync(string email, string password);
         Task UpdateUser(TEntity id);
         Task DeleteUser(int id);

@@ -27,7 +27,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             _taskRepository = taskRepository;
         }   
 
-        public async Task CreateUserAsync(UserEntity user)
+        public async Task<AuthResult> CreateUserAsync(UserEntity user)
         {
             var cedulaEmailExist = await _context.Users.FirstOrDefaultAsync(x => x.IdentificationNumber == user.IdentificationNumber || x.Email == user.Email);
             
@@ -57,7 +57,14 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             };            
 
             await _context.Users.AddAsync(userModel);
-            await _context.SaveChangesAsync();            
+            await _context.SaveChangesAsync();   
+            
+            return new AuthResult
+            {
+                User = await _context.Users.Where(u => u.IdentificationNumber.Equals(user.IdentificationNumber)).FirstAsync(),
+                Result = true
+            };
+
         }
 
         public async Task DeleteUser(int id)
@@ -133,6 +140,13 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                     Result = false
                 };
 
+            if ((bool)!existingUser.IsEmailConfirmed)
+                return new AuthResult
+                {
+                    Errors = new List<string> { "Email needs to be confirmed" },
+                    Result = false
+                };
+
             password = HashPassword.HashPasswordBD(password);
 
             var checkUserAndPass = existingUser.Password == password; 
@@ -170,3 +184,4 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
         }
     }
 }
+

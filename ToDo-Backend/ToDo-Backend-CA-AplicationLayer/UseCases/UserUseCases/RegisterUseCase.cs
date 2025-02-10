@@ -21,10 +21,10 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCase
             _accountMapper = accountMapper;
         }
         
-        public async Task ExecuteAsync(TDTO registerRequest)
+        public async Task<TOutput> ExecuteAsync(TDTO registerRequest)
         {
             var userEntity = _accountMapper.ToEntity(registerRequest);
-            await _accountRepository.CreateUserAsync(userEntity);
+            return await _accountRepository.CreateUserAsync(userEntity);
         }
          
     }

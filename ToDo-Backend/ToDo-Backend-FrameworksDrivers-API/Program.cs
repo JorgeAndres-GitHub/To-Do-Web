@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -18,6 +19,7 @@ using ToDo_Backend_CA_IntefaceAdapters_Presenters.Views;
 using ToDo_Backend_CA_InterfaceAdapters_Data;
 using ToDo_Backend_FrameworksDrivers_API.Configuration;
 using ToDo_Backend_FrameworksDrivers_API.Middlewares;
+using ToDo_Backend_FrameworksDrivers_API.Services;
 using ToDo_Backend_FrameworksDrivers_API.Validators.Task;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
@@ -51,6 +53,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
+// Email
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddSingleton<IEmailSender, EmailService>();
 
 builder.Services.AddAuthentication(options =>
 {
