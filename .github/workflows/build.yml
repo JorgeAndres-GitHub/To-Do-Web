@@ -52,17 +52,17 @@ jobs:
         run: |
           echo "Starting SonarQube analysis"
           
-          # Cambiar al directorio del backend donde está la solución
-          cd To-Do-Web/ToDo-Backend
+          # Navegar al directorio correcto
+          cd ToDo-Backend
 
           # Iniciar el análisis de SonarQube
-          ../../.sonar/scanner/dotnet-sonarscanner begin /k:"JorgeAndres-GitHub_To-Do-Web" /o:"jorgeandres-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          ../.sonar/scanner/dotnet-sonarscanner begin /k:"JorgeAndres-GitHub_To-Do-Web" /o:"jorgeandres-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
 
           # Restaurar dependencias y compilar
           dotnet restore
           dotnet build --no-restore ToDo-Backend.sln
           
           # Finalizar análisis
-          ../../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          ../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
           echo "SonarQube analysis completed"
