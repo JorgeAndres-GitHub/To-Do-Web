@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.UserRequests
 {
-    public class UpdateUserRequestDTO
+    public class UpdateUserRequestDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

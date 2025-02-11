@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task
 {
-    public class BulkDeleteRequestDTO
+    public class BulkDeleteRequestDto
     {
         public List<int> Ids { get; set; }
     }

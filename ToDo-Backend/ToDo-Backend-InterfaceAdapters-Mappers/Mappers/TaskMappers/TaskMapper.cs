@@ -5,9 +5,9 @@ using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
 
 namespace ToDo_Backend_InterfaceAdapters_Mappers.Mappers.TaskMappers
 {
-    public class TaskMapper : IMapper<TaskRequestDTO, TaskItem>
+    public class TaskMapper : IMapper<TaskRequestDto, TaskItem>
     {
-        public TaskItem ToEntity(TaskRequestDTO dto) => new TaskItem
+        public TaskItem ToEntity(TaskRequestDto dto) => new TaskItem
         {
             Id = dto.Id,
             Title = dto.Title,

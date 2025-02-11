@@ -81,22 +81,22 @@ builder.Services.AddAuthentication(options =>
 
 
 builder.Services.AddScoped<ITaskRepository<TaskItem>, TaskRepository>();
-builder.Services.AddScoped<IMapper<TaskRequestDTO, TaskItem>, TaskMapper>();
-builder.Services.AddScoped<IMapper<UpdateTaskRequestDTO, TaskItem>,  UpdateTaskMapper>();
+builder.Services.AddScoped<IMapper<TaskRequestDto, TaskItem>, TaskMapper>();
+builder.Services.AddScoped<IMapper<UpdateTaskRequestDto, TaskItem>,  UpdateTaskMapper>();
 builder.Services.AddScoped<IPresenter<TaskItem, TaskViewModel>, TaskPresenter>();
-builder.Services.AddScoped<AddTaksUseCase<TaskRequestDTO>>();
+builder.Services.AddScoped<AddTaksUseCase<TaskRequestDto>>();
 builder.Services.AddScoped<GetTaskUseCase<TaskItem>>();
 builder.Services.AddScoped<GetAllTasksUseCase<TaskItem, TaskViewModel>>();
 builder.Services.AddScoped<DeleteTaskUseCase>();
 builder.Services.AddScoped<DeleteMultipleTasksUseCase>();
-builder.Services.AddScoped<UpdateTaskUseCase<UpdateTaskRequestDTO>>();
+builder.Services.AddScoped<UpdateTaskUseCase<UpdateTaskRequestDto>>();
 builder.Services.AddScoped<MarkAsCompletedUseCase>();
 builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
 
 builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();
-builder.Services.AddScoped<IMapper<UserRegistrationRequestDTO, UserEntity>, UserMapper>();
+builder.Services.AddScoped<IMapper<UserRegistrationRequestDto, UserEntity>, UserMapper>();
 builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPresenter>();
-builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDTO, AuthResult>>();
+builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDto, AuthResult>>();
 builder.Services.AddScoped<LoginUseCase<AuthResult>>();
 builder.Services.AddScoped<GetProfileViewModelUseCase<UserEntity, AuthResult, UserViewModel>>();
 builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult>>();

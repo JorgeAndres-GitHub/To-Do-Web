@@ -10,9 +10,9 @@ using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
 
 namespace ToDo_Backend_InterfaceAdapters_Mappers.Mappers.TaskMappers
 {
-    public class UpdateTaskMapper : IMapper<UpdateTaskRequestDTO, TaskItem>
+    public class UpdateTaskMapper : IMapper<UpdateTaskRequestDto, TaskItem>
     {
-        public TaskItem ToEntity(UpdateTaskRequestDTO dto) => new TaskItem
+        public TaskItem ToEntity(UpdateTaskRequestDto dto) => new TaskItem
         {
             Id = dto.Id,
             Title = dto.Title,

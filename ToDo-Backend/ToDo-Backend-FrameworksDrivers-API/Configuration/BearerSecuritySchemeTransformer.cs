@@ -7,15 +7,17 @@ public class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider Authe
     public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {
         var authenticationScheme = await AuthenticationSchemeProvider.GetAllSchemesAsync();
+        
+        const string bearerSecuritySchemeName = "Bearer";
 
-        if(authenticationScheme.Any(authScheme => authScheme.Name == "Bearer"))
+        if (authenticationScheme.Any(authScheme => authScheme.Name == bearerSecuritySchemeName))
         {
             var requirements = new Dictionary<string, OpenApiSecurityScheme>
             {
-                ["Bearer"] = new OpenApiSecurityScheme
+                [bearerSecuritySchemeName] = new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer",
+                    Scheme = bearerSecuritySchemeName,
                     In = ParameterLocation.Header,
                     BearerFormat = "Json Web Token"
                 }
@@ -27,7 +29,7 @@ public class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider Authe
             {
                 operation.Value.Security.Add(new OpenApiSecurityRequirement
                 {
-                    [new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = "Bearer", Type = ReferenceType.SecurityScheme } }] = Array.Empty<string>()
+                    [new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = bearerSecuritySchemeName, Type = ReferenceType.SecurityScheme } }] = Array.Empty<string>()
                 });
             }            
     }

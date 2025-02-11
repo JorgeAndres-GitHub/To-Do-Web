@@ -20,19 +20,19 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        private readonly AddTaksUseCase<TaskRequestDTO> _addTaskUseCase;
+        private readonly AddTaksUseCase<TaskRequestDto> _addTaskUseCase;
         private readonly GetTaskUseCase<TaskItem> _getTaskUseCase;
         private readonly GetAllTasksUseCase<TaskItem, TaskViewModel> _getAllTasksUseCase;
         private readonly DeleteTaskUseCase _deleteTaskUseCase;
         private readonly DeleteMultipleTasksUseCase _deleteMultipleTasksUseCase;
-        private readonly UpdateTaskUseCase<UpdateTaskRequestDTO> _updateTaskUseCase;
+        private readonly UpdateTaskUseCase<UpdateTaskRequestDto> _updateTaskUseCase;
         private readonly MarkAsCompletedUseCase _markAsCompletedUseCase;
         private readonly GetAllUserTasksUseCase<TaskItem, TaskViewModel> _getAllUserTasksUseCase;
 
-        public TasksController(AddTaksUseCase<TaskRequestDTO> addTaksUseCase, 
+        public TasksController(AddTaksUseCase<TaskRequestDto> addTaksUseCase, 
             GetTaskUseCase<TaskItem> getTaskUseCase, GetAllTasksUseCase<TaskItem, 
                 TaskViewModel> getAllTasksUseCase, DeleteTaskUseCase deleteTaskUseCase,
-            DeleteMultipleTasksUseCase deleteMultipleTasksUseCase, UpdateTaskUseCase<UpdateTaskRequestDTO> updateTaskUseCase,
+            DeleteMultipleTasksUseCase deleteMultipleTasksUseCase, UpdateTaskUseCase<UpdateTaskRequestDto> updateTaskUseCase,
             MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase
             )
         {
@@ -47,7 +47,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TaskRequestDTO task)
+        public async Task<IActionResult> Create([FromBody] TaskRequestDto task)
         {
             var userId = GetUserIdService.GetUserId(User);
 
@@ -91,7 +91,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         }
 
         [HttpDelete("bulk")]
-        public async Task<IActionResult> DeleteMultipleTasks([FromBody] BulkDeleteRequestDTO request)
+        public async Task<IActionResult> DeleteMultipleTasks([FromBody] BulkDeleteRequestDto request)
         {
             var userId = GetUserIdService.GetUserId(User);
 
@@ -100,7 +100,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskRequestDTO request)
+        public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskRequestDto request)
         {
             var userId = GetUserIdService.GetUserId(User);
 

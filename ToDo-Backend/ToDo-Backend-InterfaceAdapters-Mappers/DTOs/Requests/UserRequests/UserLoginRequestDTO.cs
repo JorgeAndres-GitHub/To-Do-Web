@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.UserRequests
 {
-    public class UserLoginRequestDTO
+    public class UserLoginRequestDto
     {
         public string Email { get; set; }
         public string Password { get; set; }

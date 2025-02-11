@@ -3,7 +3,7 @@ using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.UserRequests;
 
 namespace ToDo_Backend_FrameworksDrivers_API.Validators.UserValidators
 {
-    public class LoginValidator : AbstractValidator<UserLoginRequestDTO>
+    public class LoginValidator : AbstractValidator<UserLoginRequestDto>
     {
         public LoginValidator()
         {

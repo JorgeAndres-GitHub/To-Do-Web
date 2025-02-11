@@ -44,7 +44,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UpdateUserRequestDTO> patchDoc)
+        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UpdateUserRequestDto> patchDoc)
         {
             if (patchDoc == null)
                 return BadRequest();
@@ -56,7 +56,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            var updateUserRequest = new UpdateUserRequestDTO
+            var updateUserRequest = new UpdateUserRequestDto
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,

@@ -26,13 +26,13 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly RegisterUseCase<UserRegistrationRequestDTO, AuthResult> _registerUseCase;
+        private readonly RegisterUseCase<UserRegistrationRequestDto, AuthResult> _registerUseCase;
         private readonly LoginUseCase<AuthResult> _loginUseCase;
         private readonly JwtConfig _jwtConfig;
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
 
-        public AuthenticationController(RegisterUseCase<UserRegistrationRequestDTO, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase,
+        public AuthenticationController(RegisterUseCase<UserRegistrationRequestDto, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase,
             IOptions<JwtConfig> jwtConfig, IEmailSender emailSender,
             AppDbContext context)
         {
@@ -44,7 +44,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDTO registerRequest)
+        public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto registerRequest)
         {
             var userAuthResult = await _registerUseCase.ExecuteAsync(registerRequest);
 
@@ -57,7 +57,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequestDTO loginRequest)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequestDto loginRequest)
         {
             var success = await _loginUseCase.ExecuteAsync(loginRequest.Email, loginRequest.Password);
             if(!success.Result)

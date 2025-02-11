@@ -10,9 +10,9 @@ using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.User;
 
 namespace ToDo_Backend_InterfaceAdapters_Mappers.Mappers.UserMappers
 {
-    public class UserMapper : IMapper<UserRegistrationRequestDTO, UserEntity>
+    public class UserMapper : IMapper<UserRegistrationRequestDto, UserEntity>
     {
-        public UserEntity ToEntity(UserRegistrationRequestDTO dto) => new UserEntity
+        public UserEntity ToEntity(UserRegistrationRequestDto dto) => new UserEntity
         {
 
             FirstName = dto.FirstName,

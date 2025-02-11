@@ -3,7 +3,7 @@ using ToDo_Backend_InterfaceAdapters_Mappers.DTOs.Requests.Task;
 
 namespace ToDo_Backend_FrameworksDrivers_API.Validators.Task
 {
-    public class DeleteBulkValidator : AbstractValidator<BulkDeleteRequestDTO>
+    public class DeleteBulkValidator : AbstractValidator<BulkDeleteRequestDto>
     {
         public DeleteBulkValidator()
         {
