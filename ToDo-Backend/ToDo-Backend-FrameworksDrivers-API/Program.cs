@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
@@ -52,11 +53,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
 
 // Email
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddSingleton<IEmailSender, EmailService>();
+
+// JWT
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+var tokenValidationsParameters = new TokenValidationParameters()
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false, // En produccion tiene que ser verdadero
+    ValidateAudience = false, // En produccion debe ser verdadero
+    RequireExpirationTime = false, // Falso por ahora
+    ValidateLifetime = true
+};
 
 builder.Services.AddAuthentication(options =>
 {
@@ -65,21 +80,13 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(jwt =>
 {
-    var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
-
     jwt.SaveToken = true;
-    jwt.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false, // En produccion tiene que ser verdadero
-        ValidateAudience = false, // En produccion debe ser verdadero
-        RequireExpirationTime = false, // Falso por ahora
-        ValidateLifetime = true
-    };
+    jwt.TokenValidationParameters = tokenValidationsParameters;
 });
 
+builder.Services.AddSingleton(tokenValidationsParameters);
 
+//Task Dependencies
 builder.Services.AddScoped<ITaskRepository<TaskItem>, TaskRepository>();
 builder.Services.AddScoped<IMapper<TaskRequestDto, TaskItem>, TaskMapper>();
 builder.Services.AddScoped<IMapper<UpdateTaskRequestDto, TaskItem>,  UpdateTaskMapper>();
@@ -93,6 +100,7 @@ builder.Services.AddScoped<UpdateTaskUseCase<UpdateTaskRequestDto>>();
 builder.Services.AddScoped<MarkAsCompletedUseCase>();
 builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
 
+//User Dependencies
 builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();
 builder.Services.AddScoped<IMapper<UserRegistrationRequestDto, UserEntity>, UserMapper>();
 builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPresenter>();

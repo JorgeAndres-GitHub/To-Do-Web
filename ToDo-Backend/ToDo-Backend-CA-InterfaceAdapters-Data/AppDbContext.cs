@@ -11,6 +11,7 @@ namespace ToDo_Backend_CA_InterfaceAdapters_Data
         public DbSet<UserModel> Users { get; set; }
         public DbSet<UserTaskModel> UserTaskModels { get; set; }
         public DbSet<RoleModel> Roles { get; set; }
+        public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +19,7 @@ namespace ToDo_Backend_CA_InterfaceAdapters_Data
             modelBuilder.Entity<UserModel>().ToTable("Account");
             modelBuilder.Entity<RoleModel>().ToTable("Role");  
             modelBuilder.Entity<UserTaskModel>().ToTable("UserTaskModel");
+            modelBuilder.Entity<RefreshTokenModel>().ToTable("RefreshToken");
 
             modelBuilder.Entity<UserModel>()
                 .HasKey(u => u.Id);

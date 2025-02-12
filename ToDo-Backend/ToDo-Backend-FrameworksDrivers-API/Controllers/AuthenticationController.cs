@@ -28,16 +28,19 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
     {
         private readonly RegisterUseCase<UserRegistrationRequestDto, AuthResult> _registerUseCase;
         private readonly LoginUseCase<AuthResult> _loginUseCase;
+        private readonly AddRefreshTokenUseCase<RefreshTokenModel, AuthResult> _addRefreshTokenUseCase;
         private readonly JwtConfig _jwtConfig;
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
 
         public AuthenticationController(RegisterUseCase<UserRegistrationRequestDto, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase,
+            AddRefreshTokenUseCase<RefreshTokenModel, AuthResult> addRefreshTokenUseCase,
             IOptions<JwtConfig> jwtConfig, IEmailSender emailSender,
             AppDbContext context)
         {
             _registerUseCase = registerUseCase;
             _loginUseCase = loginUseCase;
+            _addRefreshTokenUseCase = addRefreshTokenUseCase;
             _jwtConfig = jwtConfig.Value;
             _emailSender = emailSender;
             _context = context;
@@ -63,8 +66,9 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             if(!success.Result)
                 return BadRequest(success);
 
-            var token = GenerateTokenService.GenerateToken(success.User, _jwtConfig);
-            success.Token = token;
+            var tokenResult = await GenerateTokenService.GenerateToken(_addRefreshTokenUseCase, success.User, _jwtConfig);
+            success.Token = tokenResult.Token;
+            success.RefreshToken = tokenResult.RefreshToken;
 
             return Ok(success);
         }
