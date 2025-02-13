@@ -15,5 +15,6 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.User
         Task<TAuthenticationOutput> LoginAsync(string email, string password);
         Task UpdateUser(TEntity id);
         Task DeleteUser(int id);
+        Task<TAuthenticationOutput> AddRefreshTokenAsync(string tokenId, int userId);
     }
 }

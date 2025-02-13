@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ToDo-Backend-CA-AplicationLayer\ToDo-Backend-CA-AplicationLayer.csproj" />
     <ProjectReference Include="..\ToDo-Backend-CA-EnterpriseLayer\ToDo-Backend-CA-EnterpriseLayer.csproj" />
+    <ProjectReference Include="..\ToDo-Backend-CA-IntefaceAdapters-Presenters\ToDo-Backend-CA-IntefaceAdapters-Presenters.csproj" />
     <ProjectReference Include="..\ToDo-Backend-CA-InterfaceAdapters-Data\ToDo-Backend-CA-InterfaceAdapters-Data.csproj" />
     <ProjectReference Include="..\ToDo-Backend-InterfaceAdapters-Mappers\ToDo-Backend-InterfaceAdapters-Mappers.csproj" />
     <ProjectReference Include="..\ToDo-Backend-InterfaceAdapters-Models\ToDo-Backend-InterfaceAdapters-Models.csproj" />

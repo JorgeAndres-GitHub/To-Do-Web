@@ -9,19 +9,16 @@ using ToDo_Backend_CA_EnterpriseLayer;
 
 namespace ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases
 {
-    public class AddRefreshTokenUseCase<TRefreshToken, TAuthenticationOutput>
+    public class AddRefreshTokenUseCase<TAuthenticationOutput>
     {
         private readonly IAccountRepository<UserEntity, TAuthenticationOutput> _repository;
-        private readonly IMapper<TRefreshToken, RefreshTokenEntity> _mapper;
 
         public AddRefreshTokenUseCase(IAccountRepository<UserEntity, TAuthenticationOutput> repository)
         {
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(TRefreshToken refreshToken)
-        {
-            await _repository.AddRefreshTokenAsync(refreshToken);
-        }
+        public async Task<TAuthenticationOutput> ExecuteAsync(string tokenId, int userId)
+            =>  await _repository.AddRefreshTokenAsync(tokenId, userId);
     }
 }

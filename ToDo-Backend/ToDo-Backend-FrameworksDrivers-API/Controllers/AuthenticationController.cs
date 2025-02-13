@@ -28,13 +28,13 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
     {
         private readonly RegisterUseCase<UserRegistrationRequestDto, AuthResult> _registerUseCase;
         private readonly LoginUseCase<AuthResult> _loginUseCase;
-        private readonly AddRefreshTokenUseCase<RefreshTokenModel, AuthResult> _addRefreshTokenUseCase;
+        private readonly AddRefreshTokenUseCase<AuthResult> _addRefreshTokenUseCase;
         private readonly JwtConfig _jwtConfig;
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
 
         public AuthenticationController(RegisterUseCase<UserRegistrationRequestDto, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase,
-            AddRefreshTokenUseCase<RefreshTokenModel, AuthResult> addRefreshTokenUseCase,
+            AddRefreshTokenUseCase<AuthResult> addRefreshTokenUseCase,
             IOptions<JwtConfig> jwtConfig, IEmailSender emailSender,
             AppDbContext context)
         {

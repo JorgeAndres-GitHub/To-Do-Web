@@ -110,6 +110,7 @@ builder.Services.AddScoped<GetProfileViewModelUseCase<UserEntity, AuthResult, Us
 builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult>>();
 builder.Services.AddScoped<UpdateProfileUseCase<AuthResult>>();
 builder.Services.AddScoped<DeleteProfileUseCase<AuthResult>>();
+builder.Services.AddScoped<AddRefreshTokenUseCase<AuthResult>>();
 
 
 var app = builder.Build();

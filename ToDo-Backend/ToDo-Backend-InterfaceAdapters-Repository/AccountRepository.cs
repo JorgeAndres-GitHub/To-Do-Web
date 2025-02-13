@@ -10,6 +10,7 @@ using ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.User;
 using ToDo_Backend_CA_EnterpriseLayer;
 using ToDo_Backend_CA_InterfaceAdapters_Data;
+using ToDo_Backend_FrameworksDrivers_API.Services.Common;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
 using ToDo_Backend_InterfaceAdapters_Mappers.Services;
 using ToDo_Backend_InterfaceAdapters_Models;
@@ -25,7 +26,30 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
         {
             _context = context;
             _taskRepository = taskRepository;
-        }   
+        }
+
+        public async Task<AuthResult> AddRefreshTokenAsync(string tokenId, int userId)
+        {
+            var refreshToken = new RefreshTokenModel
+            {
+                JwtId = tokenId,
+                Token = RandomGenerator.GenerateRandomString(23),
+                AddedDate = DateTime.UtcNow,
+                ExpiryDate = DateTime.UtcNow.AddMonths(6),
+                IsRevoked = false,
+                IsUsed = false,
+                UserId = userId
+            };
+
+            await _context.RefreshTokens.AddAsync(refreshToken);
+            await _context.SaveChangesAsync();
+
+            return new AuthResult
+            {
+                RefreshToken = refreshToken.Token,
+                Result = true
+            };
+        }
 
         public async Task<AuthResult> CreateUserAsync(UserEntity user)
         {
