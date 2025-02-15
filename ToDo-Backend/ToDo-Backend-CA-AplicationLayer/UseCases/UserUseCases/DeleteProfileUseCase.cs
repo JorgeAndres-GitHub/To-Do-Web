@@ -18,6 +18,6 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases
         }
 
         public async Task ExecuteAsync(int id) =>
-            await _accountRepository.DeleteUser(id);
+            await _accountRepository.DeleteUserAsync(id);
     }
 }

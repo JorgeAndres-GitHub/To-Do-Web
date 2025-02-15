@@ -28,29 +28,6 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             _taskRepository = taskRepository;
         }
 
-        public async Task<AuthResult> AddRefreshTokenAsync(string tokenId, int userId)
-        {
-            var refreshToken = new RefreshTokenModel
-            {
-                JwtId = tokenId,
-                Token = RandomGenerator.GenerateRandomString(23),
-                AddedDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddMonths(6),
-                IsRevoked = false,
-                IsUsed = false,
-                UserId = userId
-            };
-
-            await _context.RefreshTokens.AddAsync(refreshToken);
-            await _context.SaveChangesAsync();
-
-            return new AuthResult
-            {
-                RefreshToken = refreshToken.Token,
-                Result = true
-            };
-        }
-
         public async Task<AuthResult> CreateUserAsync(UserEntity user)
         {
             var cedulaEmailExist = await _context.Users.FirstOrDefaultAsync(x => x.IdentificationNumber == user.IdentificationNumber || x.Email == user.Email);
@@ -91,7 +68,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
 
         }
 
-        public async Task DeleteUser(int id)
+        public async Task DeleteUserAsync(int id)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -119,11 +96,6 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                     throw;
                 }
             }
-        }
-
-        public Task<AuthResult> GetUserByEmail(string email)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<UserEntity> GetUserById(int id)
@@ -188,7 +160,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             };
         }
 
-        public async Task UpdateUser(UserEntity userEntity)
+        public async Task UpdateUserAsync(UserEntity userEntity)
         {
             var userModel = await _context.Users.FindAsync(userEntity.Id);
 

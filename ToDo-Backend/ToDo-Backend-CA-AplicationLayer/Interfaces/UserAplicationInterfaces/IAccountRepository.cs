@@ -10,11 +10,9 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.User
     public interface IAccountRepository<TEntity, TAuthenticationOutput>
     {
         Task<TEntity> GetUserById(int id);
-        Task<TAuthenticationOutput> GetUserByEmail(string email);   
         Task<TAuthenticationOutput> CreateUserAsync(TEntity user);
         Task<TAuthenticationOutput> LoginAsync(string email, string password);
-        Task UpdateUser(TEntity id);
-        Task DeleteUser(int id);
-        Task<TAuthenticationOutput> AddRefreshTokenAsync(string tokenId, int userId);
+        Task UpdateUserAsync(TEntity id);
+        Task DeleteUserAsync(int id);
     }
 }

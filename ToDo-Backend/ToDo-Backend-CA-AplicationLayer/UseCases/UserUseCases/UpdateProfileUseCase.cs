@@ -18,7 +18,7 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(UserEntity user) => await _repository.UpdateUser(user);       
+        public async Task ExecuteAsync(UserEntity user) => await _repository.UpdateUserAsync(user);       
         
     }
 }

@@ -12,6 +12,7 @@ using ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.User;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.UserAplicationInterfaces;
 using ToDo_Backend_CA_AplicationLayer.UseCases.TaskUseCases;
+using ToDo_Backend_CA_AplicationLayer.UseCases.TokenUseCases;
 using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCase;
 using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases;
 using ToDo_Backend_CA_EnterpriseLayer;
@@ -102,6 +103,7 @@ builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
 
 //User Dependencies
 builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();
+builder.Services.AddScoped<ITokenRepository<RefreshTokenModel, AuthResult>, TokenRepository>();
 builder.Services.AddScoped<IMapper<UserRegistrationRequestDto, UserEntity>, UserMapper>();
 builder.Services.AddScoped<IAccountPresenter<UserEntity, UserViewModel>, UserPresenter>();
 builder.Services.AddScoped<RegisterUseCase<UserRegistrationRequestDto, AuthResult>>();
@@ -110,7 +112,9 @@ builder.Services.AddScoped<GetProfileViewModelUseCase<UserEntity, AuthResult, Us
 builder.Services.AddScoped<GetProfileUseCase<UserEntity, AuthResult>>();
 builder.Services.AddScoped<UpdateProfileUseCase<AuthResult>>();
 builder.Services.AddScoped<DeleteProfileUseCase<AuthResult>>();
-builder.Services.AddScoped<AddRefreshTokenUseCase<AuthResult>>();
+builder.Services.AddScoped<AddRefreshTokenUseCase<RefreshTokenModel, AuthResult>>();
+builder.Services.AddScoped<GetRefreshTokenUseCase<RefreshTokenModel, AuthResult>>();
+builder.Services.AddScoped<UpdateRefreshTokenUseCase<RefreshTokenModel, AuthResult>>();
 
 
 var app = builder.Build();

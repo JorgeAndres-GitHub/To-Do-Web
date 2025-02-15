@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases;
+using ToDo_Backend_CA_AplicationLayer.UseCases.TokenUseCases;
 using ToDo_Backend_FrameworksDrivers_API.Configuration;
 using ToDo_Backend_FrameworksDrivers_API.Services.Common;
 using ToDo_Backend_InterfaceAdapters_Mappers.Auth;
@@ -12,7 +12,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Services
 {
     public static class GenerateTokenService
     {
-        internal static async Task<AuthResult> GenerateToken(AddRefreshTokenUseCase<AuthResult> useCase, UserModel user, JwtConfig jwtConfig)
+        internal static async Task<AuthResult> GenerateTokenAsync(AddRefreshTokenUseCase<RefreshTokenModel, AuthResult> useCase, UserModel user, JwtConfig jwtConfig)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(jwtConfig.Secret);

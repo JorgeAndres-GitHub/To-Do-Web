@@ -36,6 +36,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Middlewares
                 KeyNotFoundException => StatusCodes.Status404NotFound,
                 InvalidOperationException => StatusCodes.Status400BadRequest,
                 UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+                ValidateTokenException => StatusCodes.Status500InternalServerError,
                 _ => StatusCodes.Status500InternalServerError,
             };
 
