@@ -49,9 +49,10 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddCors(policyBuilder => policyBuilder.AddDefaultPolicy(policy => policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
 
 // Dependencies
+string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(connectionString);
 });
 
 
@@ -63,7 +64,7 @@ builder.Services.AddSingleton<IEmailSender, EmailService>();
 // JWT
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value ?? Environment.GetEnvironmentVariable("JwtConfig__Secret"));
 var tokenValidationsParameters = new TokenValidationParameters()
 {
     ValidateIssuerSigningKey = true,

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using ToDo_Backend_InterfaceAdapters_Mappers.DTOs;
 
-namespace ToDo_Backend_FrameworksDrivers_API.Validators
+namespace ToDo_Backend_FrameworksDrivers_API.Validators.TokenValidators
 {
     public class TokenRequestValidator : AbstractValidator<TokenRequestDto>
     {

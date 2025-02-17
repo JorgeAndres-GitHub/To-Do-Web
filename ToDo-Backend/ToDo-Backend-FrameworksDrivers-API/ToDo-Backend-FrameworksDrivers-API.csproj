@@ -7,6 +7,7 @@
     <RootNamespace>ToDo_Backend_FrameworksDrivers_API</RootNamespace>
     <UserSecretsId>10e076a6-ee60-44c5-8b6d-d6043c3383df</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>

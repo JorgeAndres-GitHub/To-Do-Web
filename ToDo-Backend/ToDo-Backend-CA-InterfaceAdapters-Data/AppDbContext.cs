@@ -1,17 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using ToDo_Backend_InterfaceAdapters_Models;
 
 namespace ToDo_Backend_CA_InterfaceAdapters_Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
         public DbSet<TaskModel> Tasks { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<UserTaskModel> UserTaskModels { get; set; }
         public DbSet<RoleModel> Roles { get; set; }
         public DbSet<RefreshTokenModel> RefreshTokens { get; set; }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        {
+            var dbCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+            if(dbCreator!= null)
+            {
+                if (!dbCreator.CanConnect())
+                    dbCreator.Create();
+                if (!dbCreator.HasTables())
+                    dbCreator.CreateTables();
+            }
+        }        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
