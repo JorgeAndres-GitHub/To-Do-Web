@@ -22,22 +22,28 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly UpdateProfileUseCase<AuthResult> _updateProfileUseCase;
         private readonly GetProfileUseCase<UserEntity, AuthResult> _getProfileUseCase;
         private readonly DeleteProfileUseCase<AuthResult> _deleteProfileUseCase;
+        private readonly ILogger<ClientController> _logger;
 
         public ClientController(GetProfileViewModelUseCase<UserEntity, AuthResult, UserViewModel> getProfileViewModelUseCase, 
             UpdateProfileUseCase<AuthResult> updateProfileUseCase,
             GetProfileUseCase<UserEntity, AuthResult> getProfileUseCase,
-            DeleteProfileUseCase<AuthResult> deleteProfileUseCase)
+            DeleteProfileUseCase<AuthResult> deleteProfileUseCase,
+            ILogger<ClientController> logger)
         {
             _getProfileViewModelUseCase = getProfileViewModelUseCase;
             _getProfileUseCase = getProfileUseCase;
             _updateProfileUseCase = updateProfileUseCase;
             _deleteProfileUseCase = deleteProfileUseCase;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($@"Get profile request received for:
+                                     - User id: {userId}.");
 
             var user = await _getProfileViewModelUseCase.ExecuteAsync(userId);
             return Ok(user);
@@ -47,14 +53,23 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UpdateUserRequestDto> patchDoc)
         {
             if (patchDoc == null)
+            {
+                _logger.LogWarning("Patch document is null.");
                 return BadRequest();
+            }
 
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($@"Update profile request received for:
+                                     - User id: {userId}.");
 
             var user = await _getProfileUseCase.ExecuteAsync(userId);
 
             if (user == null)
+            {
+                _logger.LogWarning($"User with id {userId} not found.");
                 return NotFound("User not found");
+            }        
 
             var updateUserRequest = new UpdateUserRequestDto
             {
@@ -73,7 +88,11 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             var validationResult = validator.Validate(updateUserRequest);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Validation failed.");
                 return BadRequest(validationResult.Errors);
+            }
+                
 
             // Update the user with the patched values
             user.FirstName = updateUserRequest.FirstName;
@@ -92,6 +111,9 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         public async Task<IActionResult> DeleteProfile()
         {
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($"Removing profile for user id : {userId}.");
+
             await _deleteProfileUseCase.ExecuteAsync(userId);            
             return NoContent();
         }

@@ -38,12 +38,13 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly IEmailSender _emailSender;
         private readonly AppDbContext _context;
         private readonly TokenValidationParameters _tokenValidationParameters;
+        private readonly ILogger<AuthenticationController> _logger;
 
         public AuthenticationController(RegisterUseCase<UserRegistrationRequestDto, AuthResult> registerUseCase, LoginUseCase<AuthResult> loginUseCase,
             AddRefreshTokenUseCase<RefreshTokenModel, AuthResult> addRefreshTokenUseCase, GetRefreshTokenUseCase<RefreshTokenModel, AuthResult> getRefreshTokenUseCase, 
             UpdateRefreshTokenUseCase<RefreshTokenModel, AuthResult> updateRefreshTokenUseCase
             , IOptions<JwtConfig> jwtConfig, IEmailSender emailSender,
-            AppDbContext context, TokenValidationParameters tokenValidationParameters)
+            AppDbContext context, TokenValidationParameters tokenValidationParameters, ILogger<AuthenticationController> logger)
         {
             _registerUseCase = registerUseCase;
             _loginUseCase = loginUseCase;
@@ -54,11 +55,14 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _emailSender = emailSender;
             _context = context;
             _tokenValidationParameters = tokenValidationParameters;
+            _logger = logger;
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto registerRequest)
         {
+            _logger.LogInformation("A user is trying to register");
+
             var userAuthResult = await _registerUseCase.ExecuteAsync(registerRequest);
 
             await SendVerificationEmail(userAuthResult.User);
@@ -72,6 +76,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequestDto loginRequest)
         {
+            _logger.LogInformation("A user is trying to login");
+
             var success = await _loginUseCase.ExecuteAsync(loginRequest.Email, loginRequest.Password);
             if(!success.Result)
                 return BadRequest(success);
@@ -86,6 +92,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto tokenRequestDto)
         {
+            _logger.LogInformation("A user is trying to get a refresh token");
+
             var userId = await VerifyAndGenerateTokenService.VerifyAndGenerateTokenAsync(tokenRequestDto, _tokenValidationParameters, _getRefreshTokenUseCase, _updateRefreshTokenUseCase);
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -102,6 +110,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
+            _logger.LogInformation("A user is trying to confirm email");
+
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(code))
                 return BadRequest(new AuthResult
                 {

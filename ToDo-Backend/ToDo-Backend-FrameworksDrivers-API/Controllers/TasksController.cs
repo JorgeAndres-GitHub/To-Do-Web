@@ -28,12 +28,14 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly UpdateTaskUseCase<UpdateTaskRequestDto> _updateTaskUseCase;
         private readonly MarkAsCompletedUseCase _markAsCompletedUseCase;
         private readonly GetAllUserTasksUseCase<TaskItem, TaskViewModel> _getAllUserTasksUseCase;
+        private readonly ILogger<TasksController> _logger;
 
         public TasksController(AddTaksUseCase<TaskRequestDto> addTaksUseCase, 
             GetTaskUseCase<TaskItem> getTaskUseCase, GetAllTasksUseCase<TaskItem, 
                 TaskViewModel> getAllTasksUseCase, DeleteTaskUseCase deleteTaskUseCase,
             DeleteMultipleTasksUseCase deleteMultipleTasksUseCase, UpdateTaskUseCase<UpdateTaskRequestDto> updateTaskUseCase,
-            MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase
+            MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase,
+            ILogger<TasksController> logger
             )
         {
             _addTaskUseCase = addTaksUseCase;
@@ -44,12 +46,18 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _updateTaskUseCase = updateTaskUseCase;
             _markAsCompletedUseCase = markAsCompletedUseCase;
             _getAllUserTasksUseCase = getAllUserTasksUseCase;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskRequestDto task)
         {
+            
+
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($@"Create task request received for:
+                                     - User id: {userId}.");
 
             var taskId = await _addTaskUseCase.ExecuteAsync(task, userId);
             return CreatedAtAction(nameof(GetById), new { id = taskId }, null);
@@ -57,8 +65,13 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
-        {
+        {           
+
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($@"Looking for task with
+                                - User id: {userId}.
+                                - Task id: {id}");
 
             var task = await _getTaskUseCase.ExecuteAsync(id, userId);
             return Ok(task);            
@@ -68,14 +81,19 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         [HttpGet("getAllTasks")]
         public async Task<IActionResult> GetAllTasks()
         {
+            _logger.LogInformation("Getting all tasks.");
+
             var tasks = await _getAllTasksUseCase.ExecuteAsync();
             return Ok(tasks);
         }
 
         [HttpGet("getAllUserTasks")]
         public async Task<IActionResult> GetAllUserTasks()
-        {
+        {           
+
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($"Getting all user tasks for user id: {userId}.");
 
             var tasks = await _getAllUserTasksUseCase.ExecuteAsync(userId);
             return Ok(tasks); 
@@ -86,6 +104,10 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         {
             var userId = GetUserIdService.GetUserId(User);
 
+            _logger.LogInformation($@"Delete user task with 
+                                  - User id: {userId}.
+                                  - Task id: {id}");
+
             await _deleteTaskUseCase.ExecuteAsync(id, userId);
             return NoContent();
         }
@@ -94,6 +116,10 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         public async Task<IActionResult> DeleteMultipleTasks([FromBody] BulkDeleteRequestDto request)
         {
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($@"Bulk delete user task with:
+                                - User id: {userId}.
+                                - Tasks ids: {string.Join(",", request.Ids)}.");
 
             await _deleteMultipleTasksUseCase.ExecuteAsync(request.Ids, userId);
             return NoContent();            
@@ -104,6 +130,10 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         {
             var userId = GetUserIdService.GetUserId(User);
 
+            _logger.LogInformation($@"Update user task with:
+                                  - User id: {userId}.
+                                  - Task Id: {request.Id}");
+
             await _updateTaskUseCase.ExecuteAsync(request, userId);
             return NoContent();            
         }
@@ -112,6 +142,10 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         public async Task<IActionResult> MarkAsCompletedTask(int id)
         {
             var userId = GetUserIdService.GetUserId(User);
+
+            _logger.LogInformation($@"Mark as completed user task with:
+                                  - User id: {userId}.
+                                  - Task Id: {id}");
 
             await _markAsCompletedUseCase.ExecuteAsync(id, userId);
             return NoContent();            

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.Identity.Client;
+using System.Net;
 using System.Text.Json;
 using ToDo_Backend_CA_AplicationLayer.Exceptions;
 
@@ -7,10 +8,12 @@ namespace ToDo_Backend_FrameworksDrivers_API.Middlewares
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -25,8 +28,11 @@ namespace ToDo_Backend_FrameworksDrivers_API.Middlewares
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception ex)
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
+            _logger.LogWarning("Execption handling middleware has been called.");
+            _logger.LogError(ex, ex.Message);
+
             context.Response.ContentType = "application/json";
             
             context.Response.StatusCode = ex switch
@@ -47,7 +53,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Middlewares
                 Details = ex.InnerException?.Message
             };
 
-            return context.Response.WriteAsJsonAsync(errorResponse);
+            await context.Response.WriteAsJsonAsync(errorResponse);
         }
     }
 }
