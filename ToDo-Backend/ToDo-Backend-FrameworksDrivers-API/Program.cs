@@ -92,6 +92,11 @@ try
         jwt.SaveToken = true;
         jwt.TokenValidationParameters = tokenValidationsParameters;
     });
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("TaskPublisher", policy => policy.RequireClaim("Role", "1"));
+    });
+
 
     builder.Services.AddSingleton(tokenValidationsParameters);
 
@@ -108,6 +113,7 @@ try
     builder.Services.AddScoped<UpdateTaskUseCase<UpdateTaskRequestDto>>();
     builder.Services.AddScoped<MarkAsCompletedUseCase>();
     builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
+    builder.Services.AddScoped<PostTaskUseCase>();
 
     //User Dependencies
     builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();

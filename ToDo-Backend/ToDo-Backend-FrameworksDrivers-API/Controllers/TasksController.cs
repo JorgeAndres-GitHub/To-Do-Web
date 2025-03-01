@@ -28,13 +28,14 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly UpdateTaskUseCase<UpdateTaskRequestDto> _updateTaskUseCase;
         private readonly MarkAsCompletedUseCase _markAsCompletedUseCase;
         private readonly GetAllUserTasksUseCase<TaskItem, TaskViewModel> _getAllUserTasksUseCase;
+        private readonly PostTaskUseCase _postTaskUseCase;
         private readonly ILogger<TasksController> _logger;
 
         public TasksController(AddTaksUseCase<TaskRequestDto> addTaksUseCase, 
             GetTaskUseCase<TaskItem> getTaskUseCase, GetAllTasksUseCase<TaskItem, 
                 TaskViewModel> getAllTasksUseCase, DeleteTaskUseCase deleteTaskUseCase,
             DeleteMultipleTasksUseCase deleteMultipleTasksUseCase, UpdateTaskUseCase<UpdateTaskRequestDto> updateTaskUseCase,
-            MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase,
+            MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase, PostTaskUseCase postTaskUseCase, 
             ILogger<TasksController> logger
             )
         {
@@ -46,6 +47,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _updateTaskUseCase = updateTaskUseCase;
             _markAsCompletedUseCase = markAsCompletedUseCase;
             _getAllUserTasksUseCase = getAllUserTasksUseCase;
+            _postTaskUseCase = postTaskUseCase;
             _logger = logger;
         }
 
@@ -59,8 +61,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _logger.LogInformation($@"Create task request received for:
                                      - User id: {userId}.");
 
-            var taskId = await _addTaskUseCase.ExecuteAsync(task, userId);
-            return CreatedAtAction(nameof(GetById), new { id = taskId }, null);
+            var (taskId, shouldRefreshToken) = await _addTaskUseCase.ExecuteAsync(task, userId);
+            return CreatedAtAction(nameof(GetById), new { id = taskId }, new {taskId, shouldRefreshToken});
         }
 
         [HttpGet("{id}")]
@@ -149,6 +151,14 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
 
             await _markAsCompletedUseCase.ExecuteAsync(id, userId);
             return NoContent();            
+        }
+
+        [Authorize(Policy = "TaskPublisher")]
+        [HttpPut("{taskId}")]
+        public async Task<IActionResult> PostTask(int taskId)
+        {
+            await _postTaskUseCase.ExecuteAsync(taskId);
+            return NoContent();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
 
         public TaskRepository(AppDbContext dbContext) => _dbContext = dbContext;
 
-        public async Task<int> AddTaskAsync(TaskItem task, int userId)
+        public async Task<(int taskId, bool shouldRefreshToken)> AddTaskAsync(TaskItem task, int userId)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
@@ -44,11 +44,26 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                     await _dbContext.SaveChangesAsync();
 
                     user.CreatedTasks += 1;
-                    await _dbContext.SaveChangesAsync();
+                    bool shouldRefreshToken = false;
 
+
+                    if (user.CreatedTasks == 3)
+                    {
+                        user.IdRol = 2;
+                        shouldRefreshToken = true;
+                    }
+                    else if (user.CreatedTasks == 5)
+                    {
+                        user.IdRol = 1;
+                        shouldRefreshToken = true;
+                    }
+                
+
+                    await _dbContext.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    return taskModel.Id;
+
+                    return (taskModel.Id, shouldRefreshToken);
                 }
                 catch (Exception)
                 {
@@ -239,6 +254,18 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             taskModel.UpdatedAt = DateTime.Now;
             taskModel.DueDate = taskItem.DueDate == null ? taskModel.DueDate : taskItem.DueDate;
 
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task PostTaskAsync(int taskId)
+        {
+            var taskModel = await _dbContext.Tasks.FindAsync(taskId);
+            if(taskModel == null)
+                throw new TaskIdValidationException(taskId);
+
+            taskModel.IsPublic = true;
+
+            _dbContext.Tasks.Update(taskModel);
             await _dbContext.SaveChangesAsync();
         }
     }

@@ -11,10 +11,11 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces
         Task<IEnumerable<T>> GetAllUserTasksAsync(int userId);
         Task<T> GetTaskAsync(int id, int userId);
         Task<IEnumerable<T>> GetAllTasksAsync();
-        Task<int> AddTaskAsync(T task, int userId);
+        Task<(int taskId, bool shouldRefreshToken)> AddTaskAsync(T task, int userId);
         Task DeleteUserTaskAsync(int id, int userId);
         Task UpdateTaskAsync(T task, int userId);
         Task DeleteMultipleTasksAsync(IEnumerable<int> idList, int userId);
         Task MarkAsCompletedAsync(int id, int userId);
+        Task PostTaskAsync(int taskId);
     }
 }

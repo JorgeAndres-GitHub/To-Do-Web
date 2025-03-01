@@ -20,7 +20,7 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.TaskUseCases
             _mapper = mapper;
         }
 
-        public async Task<int> ExecuteAsync(TDTO task, int userId)
+        public async Task<(int taskId, bool shouldRefreshToken)> ExecuteAsync(TDTO task, int userId)
         {
             var taskItem = _mapper.ToEntity(task);
             return await _repository.AddTaskAsync(taskItem, userId);
