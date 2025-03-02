@@ -15,7 +15,8 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
 
         public async Task<(int taskId, bool shouldRefreshToken)> AddTaskAsync(TaskItem task, int userId)
         {
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            var useTransactions = _dbContext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory";
+            using (var transaction = useTransactions ? await _dbContext.Database.BeginTransactionAsync() : null)
             {
                 try
                 {
@@ -30,7 +31,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                     await _dbContext.Tasks.AddAsync(taskModel);
                     await _dbContext.SaveChangesAsync();
 
-                    var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                    var user = await _dbContext.Users.FindAsync(userId);
                     if (user == null)
                         throw new KeyNotFoundException("No user found with the specified Id.");
 
@@ -60,14 +61,14 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                 
 
                     await _dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    if (useTransactions) await transaction.CommitAsync();
 
 
                     return (taskModel.Id, shouldRefreshToken);
                 }
                 catch (Exception)
                 {
-                    await transaction.RollbackAsync();
+                    if (useTransactions) await transaction.RollbackAsync();
                     throw;
                 }
             }

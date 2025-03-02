@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo-Backend-InterfaceAdapt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo-Backend-CA-IntefaceAdapters-Presenters", "ToDo-Backend-CA-IntefaceAdapters-Presenters\ToDo-Backend-CA-IntefaceAdapters-Presenters.csproj", "{6B997D69-E364-45D8-BDD7-D8E340D56CF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo-Backend-CA-TestUnit", "ToDo-Backend-CA-TestUnit\ToDo-Backend-CA-TestUnit.csproj", "{7CAFE356-58ED-4DB4-B719-8E1F7CAF2B7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{6B997D69-E364-45D8-BDD7-D8E340D56CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B997D69-E364-45D8-BDD7-D8E340D56CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B997D69-E364-45D8-BDD7-D8E340D56CF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CAFE356-58ED-4DB4-B719-8E1F7CAF2B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CAFE356-58ED-4DB4-B719-8E1F7CAF2B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CAFE356-58ED-4DB4-B719-8E1F7CAF2B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CAFE356-58ED-4DB4-B719-8E1F7CAF2B7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
