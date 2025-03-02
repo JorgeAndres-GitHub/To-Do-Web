@@ -52,13 +52,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                     {
                         user.IdRol = 2;
                         shouldRefreshToken = true;
-                    }
-                    else if (user.CreatedTasks == 5)
-                    {
-                        user.IdRol = 1;
-                        shouldRefreshToken = true;
-                    }
-                
+                    }                
 
                     await _dbContext.SaveChangesAsync();
                     if (useTransactions) await transaction.CommitAsync();
@@ -175,12 +169,14 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             };
         }
 
-        public async Task MarkAsCompletedAsync(int id, int userId)
+        public async Task<bool> MarkAsCompletedAsync(int id, int userId)
         {
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            var useTransactions = _dbContext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory";
+            using (var transaction = useTransactions ? await _dbContext.Database.BeginTransactionAsync() : null)
             {
                 try
                 {
+                    var shouldRefreshToken = false;
                     var userTasks = await GetAllUserTasksAsync(userId);
 
                     if (!userTasks.Any())
@@ -212,23 +208,21 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
 
                     user.CompletedTasks += 1;
 
-                    if (user.CompletedTasks == 2)
-                    {
-                        user.IdRol = 2;
-                    }
-
-                    if (user.CompletedTasks == 4)
+                    if (user.CompletedTasks == 5)
                     {
                         user.IdRol = 1;
+                        shouldRefreshToken = true;
                     }
 
                     await _dbContext.SaveChangesAsync();
 
-                    await transaction.CommitAsync();
+                    if(useTransactions) await transaction.CommitAsync();
+
+                    return shouldRefreshToken;
                 }
                 catch (Exception)
                 {
-                    await transaction.RollbackAsync();
+                    if(useTransactions) await transaction.RollbackAsync();
                     throw;
                 }
             }

@@ -149,8 +149,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
                                   - User id: {userId}.
                                   - Task Id: {id}");
 
-            await _markAsCompletedUseCase.ExecuteAsync(id, userId);
-            return NoContent();            
+            var shouldRefreshToken = await _markAsCompletedUseCase.ExecuteAsync(id, userId);
+            return Ok(new { shouldRefreshToken });            
         }
 
         [Authorize(Policy = "TaskPublisher")]
