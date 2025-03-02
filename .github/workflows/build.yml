@@ -50,8 +50,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          echo "🚀 Iniciando SonarQube Analysis..."
-          
+          [System.Console]::WriteLine("Starting SonarQube analysis...")
+
           # Navegar al directorio del backend
           cd ToDo-Backend
 
@@ -62,22 +62,22 @@ jobs:
           dotnet restore
           dotnet build --no-restore ToDo-Backend.sln
 
-          echo "✅ Build completado. Ejecutando pruebas unitarias con cobertura..."
+          [System.Console]::WriteLine("Build completed. Running tests with coverage...")
 
           # Ejecutar pruebas unitarias con cobertura de código
           dotnet test ToDo-Backend-CA-TestUnit/ToDo-Backend-CA-TestUnit.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage.opencover.xml
 
-          echo "🔍 Verificando si el archivo coverage.opencover.xml se generó correctamente..."
+          [System.Console]::WriteLine("Checking if coverage.opencover.xml was generated...")
 
           # Verificar si el archivo de cobertura existe
           if (Test-Path "ToDo-Backend-CA-TestUnit/coverage.opencover.xml") {
-            echo "✅ Archivo coverage.opencover.xml encontrado. Continuando con el análisis..."
+            [System.Console]::WriteLine("Coverage file found. Proceeding with SonarQube analysis...")
           } else {
-            echo "❌ ERROR: No se encontró coverage.opencover.xml. Abortando análisis..."
+            [System.Console]::WriteLine("ERROR: coverage.opencover.xml not found. Exiting...")
             exit 1
           }
 
           # Finalizar análisis de SonarQube
           ../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-          
-          echo "✅ Análisis de SonarQube completado correctamente. 🚀"
+
+          [System.Console]::WriteLine("SonarQube analysis completed successfully.")
