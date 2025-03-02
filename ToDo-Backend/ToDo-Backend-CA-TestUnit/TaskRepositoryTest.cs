@@ -27,7 +27,7 @@ namespace ToDo_Backend_CA_TestUnit
 
         public TaskRepositoryTest()
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "Test").Options;
+            var options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             _dbContext = new AppDbContext(options);
             _taskRepository = new TaskRepository(_dbContext);
         }
