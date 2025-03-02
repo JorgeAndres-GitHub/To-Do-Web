@@ -50,22 +50,34 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          echo "Starting SonarQube analysis"
+          echo "🚀 Iniciando SonarQube Analysis..."
           
           # Navegar al directorio del backend
           cd ToDo-Backend
 
-          # Iniciar el análisis de SonarQube, especificando el reporte de cobertura
-          ../.sonar/scanner/dotnet-sonarscanner begin /k:"JorgeAndres-GitHub_To-Do-Web" /o:"jorgeandres-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="ToDo-Backend-CA-TestUnit/coverage.opencover.xml"
+          # Iniciar el análisis de SonarQube
+          ../.sonar/scanner/dotnet-sonarscanner begin /k:"JorgeAndres-GitHub_To-Do-Web" /o:"jorgeandres-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}/ToDo-Backend-CA-TestUnit/coverage.opencover.xml"
 
           # Restaurar dependencias y compilar
           dotnet restore
           dotnet build --no-restore ToDo-Backend.sln
-          
-          # Ejecutar pruebas y generar el reporte de cobertura
-          dotnet test ToDo-Backend-CA-TestUnit/ToDo-Backend-CA-TestUnit.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../coverage.opencover.xml
-          
+
+          echo "✅ Build completado. Ejecutando pruebas unitarias con cobertura..."
+
+          # Ejecutar pruebas unitarias con cobertura de código
+          dotnet test ToDo-Backend-CA-TestUnit/ToDo-Backend-CA-TestUnit.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage.opencover.xml
+
+          echo "🔍 Verificando si el archivo coverage.opencover.xml se generó correctamente..."
+
+          # Verificar si el archivo de cobertura existe
+          if (Test-Path "ToDo-Backend-CA-TestUnit/coverage.opencover.xml") {
+            echo "✅ Archivo coverage.opencover.xml encontrado. Continuando con el análisis..."
+          } else {
+            echo "❌ ERROR: No se encontró coverage.opencover.xml. Abortando análisis..."
+            exit 1
+          }
+
           # Finalizar análisis de SonarQube
           ../.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
-          echo "SonarQube analysis completed"
+          echo "✅ Análisis de SonarQube completado correctamente. 🚀"
