@@ -125,8 +125,12 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             if (user == null)
                 return NotFound($"Unable to load user with ID '{userId}'.");
 
-            // CORREGIR ESTO
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            if(user.VerificationCode!= code)
+                return BadRequest(new AuthResult
+                {
+                    Result = false,
+                    Errors = new List<string> { "Invalid verification code" }
+                });
 
             user.IsEmailConfirmed = true;
             await _context.SaveChangesAsync();
@@ -137,8 +141,12 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
 
         private async Task SendVerificationEmail(UserModel user)
         {
+            _logger.LogWarning("Sending verification email");
             var verificationCode = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             verificationCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(verificationCode));
+
+            user.VerificationCode = verificationCode;
+            await _context.SaveChangesAsync();
 
             // example : https://localhost:8080/authentication/verifyEmail/userId=exampleuserId&code=exampleCode
             var callbackUrl = $"{Request.Scheme}://{Request.Host}{Url.Action("ConfirmEmail", controller: "Authentication", new { UserId = user.Id, code = verificationCode })}";
