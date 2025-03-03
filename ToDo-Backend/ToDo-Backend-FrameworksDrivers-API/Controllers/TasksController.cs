@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ToDo_Backend_CA_AplicationLayer.Exceptions;
@@ -53,9 +54,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskRequestDto task)
-        {
-            
-
+        {          
             var userId = GetUserIdService.GetUserId(User);
 
             _logger.LogInformation($@"Create task request received for:
@@ -119,12 +118,12 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         {
             var userId = GetUserIdService.GetUserId(User);
 
-            _logger.LogInformation($@"Bulk delete user task with:
-                                - User id: {userId}.
-                                - Tasks ids: {string.Join(",", request.Ids)}.");
+            var taskIds = string.Join(", ", request.Ids);
+            _logger.LogInformation("Bulk delete user task with: User id: {UserId}, Tasks ids: {TaskIds}", userId, taskIds);
+
 
             await _deleteMultipleTasksUseCase.ExecuteAsync(request.Ids, userId);
-            return NoContent();            
+            return NoContent();
         }
 
         [HttpPut]
@@ -132,9 +131,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         {
             var userId = GetUserIdService.GetUserId(User);
 
-            _logger.LogInformation($@"Update user task with:
-                                  - User id: {userId}.
-                                  - Task Id: {request.Id}");
+            _logger.LogInformation($"Update user task with: User id: {userId}. Task Id: {request.Id.ToString().Replace('\n', '_').Replace('\r', '_')}");
 
             await _updateTaskUseCase.ExecuteAsync(request, userId);
             return NoContent();            
