@@ -18,5 +18,6 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces
         Task<bool> MarkAsCompletedAsync(int id, int userId);
         Task PostTaskAsync(int taskId);
         Task<IEnumerable<T>> GetPublicsTasksAsync();
+        Task AssignPublicTaskAsync(int userId, int taskId);
     }
 }

@@ -286,5 +286,34 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             _dbContext.Tasks.Update(taskModel);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task AssignPublicTaskAsync(int userId, int taskId)
+        {
+            var task = await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
+            if(task == null)
+                throw new TaskIdValidationException(taskId);
+            if(!task.IsPublic)
+                throw new Exception($"Error when trying to assign task with id {taskId}");
+
+            var taskItem = new TaskItem
+            {
+                Title = task.Title,
+                Description = task.Description,
+                IsCompleted = false,
+                IsPublic = false,
+                CreatedAt = task.CreatedAt,
+                UpdatedAt = task.UpdatedAt,
+                DueDate = task.DueDate
+            };
+
+            var userTaskModel = new UserTaskModel
+            {
+                TaskId = task.Id,
+                UserId = userId
+            };
+
+            await _dbContext.UserTaskModels.AddAsync(userTaskModel);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

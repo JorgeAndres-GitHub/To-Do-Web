@@ -116,6 +116,7 @@ try
     builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
     builder.Services.AddScoped<PostTaskUseCase>();
     builder.Services.AddScoped<GetPublicsTaskUseCase<TaskViewModel>>();
+    builder.Services.AddScoped<AssignPublicTaskUseCase>();
 
     //User Dependencies
     builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();

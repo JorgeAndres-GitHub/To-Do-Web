@@ -74,7 +74,7 @@ namespace ToDo_Backend_CA_TestUnit
 
             // Act
             var result1 = await _taskRepository.AddTaskAsync(taskItem, 1);
-            var result2= await _taskRepository.AddTaskAsync(taskItem, 2);
+            var result2 = await _taskRepository.AddTaskAsync(taskItem, 2);
 
             // Assert
             Assert.Equal(1, result1.taskId);
@@ -84,7 +84,7 @@ namespace ToDo_Backend_CA_TestUnit
             Assert.False(result2.shouldRefreshToken);
         }
 
-        [Fact]  
+        [Fact]
         public async Task GetAllUserTasksAsync_ShouldReturnUserTasks()
         {
             // Arrange
@@ -123,8 +123,8 @@ namespace ToDo_Backend_CA_TestUnit
             // Assert
             Assert.NotNull(result1);
             Assert.Equal(2, result1.Count());
-            Assert.Contains(result1, t => t.Id == 1 && t.Title == "Task 1" && t.Description== "Desc 1");
-            Assert.Contains(result1, t => t.Id == 2 && t.Title == "Task 2" && t.Description== "Desc 2");
+            Assert.Contains(result1, t => t.Id == 1 && t.Title == "Task 1" && t.Description == "Desc 1");
+            Assert.Contains(result1, t => t.Id == 2 && t.Title == "Task 2" && t.Description == "Desc 2");
 
             Assert.NotNull(result2);
             Assert.Equal(2, result2.Count());
@@ -408,6 +408,50 @@ namespace ToDo_Backend_CA_TestUnit
             Assert.Single(result);
             Assert.True(result.FirstOrDefault(t => t.Title == task1.Title) != null);
 
+        }
+
+        [Fact]
+        public async Task AssignPublicTaskAsync_ShouldAssignTaskToUser()
+        {
+            // Arrange
+            var userId = 1;
+            var taskId = 1;
+            var user = new UserModel
+            {
+                Id = userId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "johndoe@example.com",
+                Password = "#SecurePassword123",
+                Phone = "123456789",
+                IdentificationNumber = "ABC123454255",
+                City = "Cartagena",
+                Country = "Colombia",
+                CompletedTasks = 4,
+                IdRol = 3
+            };
+
+            var task = new TaskModel
+            {
+                Id = taskId,
+                Title = "Sample Task",
+                Description = "A task to complete",
+                IsCompleted = false,
+                UpdatedAt = DateTime.Now,
+                IsPublic = true
+            };
+
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.Tasks.AddAsync(task);
+            await _dbContext.SaveChangesAsync();
+
+            // Act
+            await _taskRepository.AssignPublicTaskAsync(userId, taskId);
+
+            var userTaskModel = await _dbContext.UserTaskModels.FirstOrDefaultAsync(ut => ut.UserId == userId && ut.TaskId == taskId);
+
+            // Assert
+            Assert.NotNull(userTaskModel);
         }
     }
 }

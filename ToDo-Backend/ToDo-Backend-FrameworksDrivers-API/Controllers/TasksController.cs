@@ -31,6 +31,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly GetAllUserTasksUseCase<TaskItem, TaskViewModel> _getAllUserTasksUseCase;
         private readonly PostTaskUseCase _postTaskUseCase;
         private readonly GetPublicsTaskUseCase<TaskViewModel> _getPublishTaskUseCase;
+        private readonly AssignPublicTaskUseCase _assignPublicTaskUseCase;
         private readonly ILogger<TasksController> _logger;
 
         public TasksController(AddTaksUseCase<TaskRequestDto> addTaksUseCase, 
@@ -39,6 +40,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             DeleteMultipleTasksUseCase deleteMultipleTasksUseCase, UpdateTaskUseCase<UpdateTaskRequestDto> updateTaskUseCase,
             MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase,
             PostTaskUseCase postTaskUseCase, GetPublicsTaskUseCase<TaskViewModel> getPublicsTaskUseCase,
+            AssignPublicTaskUseCase assignPublicTaskUseCase,
             ILogger<TasksController> logger
             )
         {
@@ -52,6 +54,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _getAllUserTasksUseCase = getAllUserTasksUseCase;
             _postTaskUseCase = postTaskUseCase;
             _getPublishTaskUseCase = getPublicsTaskUseCase;
+            _assignPublicTaskUseCase = assignPublicTaskUseCase;
             _logger = logger;
         }
 
@@ -168,6 +171,16 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         public async Task<IActionResult> PostTask(int taskId)
         {
             await _postTaskUseCase.ExecuteAsync(taskId);
+            return NoContent();
+        }
+
+        [Authorize(Policy = "TaskViewer")]
+        [HttpPost("assignPublicTask/{taskId}")]
+        public async Task<IActionResult> AssignPublicTaskAsync(int taskId)
+        {
+            var userId = GetUserIdService.GetUserId(User);
+            _logger.LogInformation($@"Getting public task for user id: {userId}.");
+            await _assignPublicTaskUseCase.ExecuteAsync(userId, taskId);
             return NoContent();
         }
     }
