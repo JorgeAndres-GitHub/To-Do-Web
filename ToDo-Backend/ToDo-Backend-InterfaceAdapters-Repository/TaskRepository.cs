@@ -101,8 +101,10 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             if (!tasksToDelete.Any())
                 throw new KeyNotFoundException("No tasks found with the specified Ids.");
 
+            var taskIdsToDelete = tasksToDelete.Select(t => t.Id).ToList();
+
             var tasks = await _dbContext.Tasks
-                .Where(t => idList.Contains(t.Id) && tasksToDelete.Any(td => td.Id == t.Id))
+                .Where(t => taskIdsToDelete.Contains(t.Id))
                 .ToListAsync();
 
             if (!tasks.Any())
