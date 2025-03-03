@@ -95,6 +95,7 @@ try
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("TaskPublisher", policy => policy.RequireClaim("Role", "1"));
+        options.AddPolicy("TaskViewer", policy => policy.RequireClaim("Role", "1", "2"));
     });
 
 
@@ -114,6 +115,7 @@ try
     builder.Services.AddScoped<MarkAsCompletedUseCase>();
     builder.Services.AddScoped<GetAllUserTasksUseCase<TaskItem, TaskViewModel>>();
     builder.Services.AddScoped<PostTaskUseCase>();
+    builder.Services.AddScoped<GetPublicsTaskUseCase<TaskViewModel>>();
 
     //User Dependencies
     builder.Services.AddScoped<IAccountRepository<UserEntity, AuthResult>, AccountRepository>();

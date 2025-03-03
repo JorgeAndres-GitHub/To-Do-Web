@@ -132,6 +132,8 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             await _dbContext.SaveChangesAsync();
         }
 
+
+        // CONVERTIR FUNCION
         public async Task<IEnumerable<TaskItem>> GetAllTasksAsync() => await _dbContext.Tasks.Select(t => new TaskItem
         {
             Id = t.Id,
@@ -143,6 +145,25 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
             DueDate = t.DueDate,
             IsPublic = t.IsPublic
         }).ToListAsync();
+
+
+        public async Task<IEnumerable<TaskItem>> GetPublicsTasksAsync()
+        {
+            var tasks = await _dbContext.Tasks.Where(t => t.IsPublic).ToListAsync();
+            if (tasks.Count == 0)
+                throw new Exception("There is no public tasks.");
+            return tasks.Select(t => new TaskItem
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                IsCompleted = t.IsCompleted,
+                CreatedAt = t.CreatedAt,
+                UpdatedAt = t.UpdatedAt,
+                DueDate = t.DueDate,
+                IsPublic = t.IsPublic
+            }).ToList();
+        }
 
         public async Task<TaskItem> GetTaskAsync(int id, int userId)
         {

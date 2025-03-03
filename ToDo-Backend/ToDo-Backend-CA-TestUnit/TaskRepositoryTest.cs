@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces;
 using ToDo_Backend_CA_AplicationLayer.UseCases.TaskUseCases;
 using ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases;
@@ -372,5 +373,41 @@ namespace ToDo_Backend_CA_TestUnit
             Assert.True(updatedTask.IsPublic);
         }
 
+
+        [Fact]
+        public async Task GetPublicsTasksAsync_ShouldReturnPublicsTasks()
+        {
+            // Arrange
+            var task1 = new TaskModel
+            {
+                Id = 1,
+                Title = "Public Task",
+                Description = "Test Task",
+                IsCompleted = false,
+                IsPublic = true
+            };
+            var task2 = new TaskModel
+            {
+                Id = 2,
+                Title = "Private Task",
+                Description = "Test Task",
+                IsCompleted = false,
+                IsPublic = false
+            };
+
+            var tasksList = new List<TaskModel> { task1, task2 };
+
+            await _dbContext.Tasks.AddRangeAsync(tasksList);
+            await _dbContext.SaveChangesAsync();
+
+            // Act
+            var result = await _taskRepository.GetPublicsTasksAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result);
+            Assert.True(result.FirstOrDefault(t => t.Title == task1.Title) != null);
+
+        }
     }
 }

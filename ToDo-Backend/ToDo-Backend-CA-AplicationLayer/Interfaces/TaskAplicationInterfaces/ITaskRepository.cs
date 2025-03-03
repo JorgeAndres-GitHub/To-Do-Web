@@ -17,5 +17,6 @@ namespace ToDo_Backend_CA_AplicationLayer.Interfaces.TaskAplicationInterfaces
         Task DeleteMultipleTasksAsync(IEnumerable<int> idList, int userId);
         Task<bool> MarkAsCompletedAsync(int id, int userId);
         Task PostTaskAsync(int taskId);
+        Task<IEnumerable<T>> GetPublicsTasksAsync();
     }
 }

@@ -125,6 +125,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             if (user == null)
                 return NotFound($"Unable to load user with ID '{userId}'.");
 
+            // CORREGIR ESTO
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
             user.IsEmailConfirmed = true;

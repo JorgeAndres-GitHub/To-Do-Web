@@ -30,13 +30,15 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         private readonly MarkAsCompletedUseCase _markAsCompletedUseCase;
         private readonly GetAllUserTasksUseCase<TaskItem, TaskViewModel> _getAllUserTasksUseCase;
         private readonly PostTaskUseCase _postTaskUseCase;
+        private readonly GetPublicsTaskUseCase<TaskViewModel> _getPublishTaskUseCase;
         private readonly ILogger<TasksController> _logger;
 
         public TasksController(AddTaksUseCase<TaskRequestDto> addTaksUseCase, 
             GetTaskUseCase<TaskItem> getTaskUseCase, GetAllTasksUseCase<TaskItem, 
                 TaskViewModel> getAllTasksUseCase, DeleteTaskUseCase deleteTaskUseCase,
             DeleteMultipleTasksUseCase deleteMultipleTasksUseCase, UpdateTaskUseCase<UpdateTaskRequestDto> updateTaskUseCase,
-            MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase, PostTaskUseCase postTaskUseCase, 
+            MarkAsCompletedUseCase markAsCompletedUseCase, GetAllUserTasksUseCase<TaskItem, TaskViewModel> getAllUserTasksUseCase,
+            PostTaskUseCase postTaskUseCase, GetPublicsTaskUseCase<TaskViewModel> getPublicsTaskUseCase,
             ILogger<TasksController> logger
             )
         {
@@ -49,6 +51,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _markAsCompletedUseCase = markAsCompletedUseCase;
             _getAllUserTasksUseCase = getAllUserTasksUseCase;
             _postTaskUseCase = postTaskUseCase;
+            _getPublishTaskUseCase = getPublicsTaskUseCase;
             _logger = logger;
         }
 
@@ -85,6 +88,16 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
             _logger.LogInformation("Getting all tasks.");
 
             var tasks = await _getAllTasksUseCase.ExecuteAsync();
+            return Ok(tasks);
+        }
+
+        [Authorize(Policy = "TaskViewer")]
+        [HttpGet("getPublicsTasks")]
+        public async Task<IActionResult> GetPublishTasksAsync()
+        {
+            var userId = GetUserIdService.GetUserId(User);
+            _logger.LogInformation($@"Getting publics task for user id: {userId}.");
+            var tasks = await _getPublishTaskUseCase.ExecuteAsync();
             return Ok(tasks);
         }
 
