@@ -164,7 +164,7 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
         {
             var userModel = await _context.Users.FindAsync(userEntity.Id);
 
-            if(userEntity == null)
+            if(userModel == null)
                 throw new KeyNotFoundException("User not found.");
 
             userModel.FirstName = userEntity.FirstName;

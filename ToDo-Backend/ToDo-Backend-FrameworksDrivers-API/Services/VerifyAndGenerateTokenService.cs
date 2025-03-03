@@ -27,7 +27,14 @@ namespace ToDo_Backend_FrameworksDrivers_API.Services
                     throw new ValidateTokenException("Invalid token");
             }
 
-            var utcExpiryDate = long.Parse(tokenBeingVerified.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp).Value);
+            var expClaim = tokenBeingVerified.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp);
+            if (expClaim == null)
+            {
+                throw new ValidateTokenException("Token does not contain an expiration claim.");
+            }
+
+            var utcExpiryDate = long.Parse(expClaim.Value);
+
 
             var expiryDate = DateTimeOffset.FromUnixTimeSeconds(utcExpiryDate).UtcDateTime;
             if (expiryDate < DateTime.UtcNow)
@@ -35,7 +42,13 @@ namespace ToDo_Backend_FrameworksDrivers_API.Services
 
             var storedToken = await getTokenUseCase.ExecuteAsync(dto.RefreshToken);
 
-            var jti = tokenBeingVerified.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti).Value;
+            var jtiClaim = tokenBeingVerified.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti);
+            if (jtiClaim?.Value == null)
+            {
+                throw new ValidateTokenException("Missing JTI claim.");
+            }
+            var jti = jtiClaim.Value;
+
 
             if (jti != storedToken.JwtId)
                 throw new ValidateTokenException("Invalid Token");

@@ -160,7 +160,7 @@ try
 
     app.MapControllers();
 
-    app.Run();
+    await app.RunAsync();
 }
 catch (Exception e)
 {
