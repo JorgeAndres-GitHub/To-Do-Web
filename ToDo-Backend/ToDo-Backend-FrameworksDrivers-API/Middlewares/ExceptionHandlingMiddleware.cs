@@ -48,8 +48,8 @@ namespace ToDo_Backend_FrameworksDrivers_API.Middlewares
 
             var errorResponse = new
             {
-                StatusCode = context.Response.StatusCode,
-                Message = ex.Message,
+                context.Response.StatusCode,
+                ex.Message,
                 Details = ex.InnerException?.Message
             };
 
