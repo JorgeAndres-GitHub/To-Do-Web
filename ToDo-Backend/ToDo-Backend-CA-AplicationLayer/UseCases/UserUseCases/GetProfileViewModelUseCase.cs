@@ -23,7 +23,7 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases
 
         public async Task<TOutput> ExecuteAsync(int id)
         {
-            var user = await _repository.GetUserById(id);
+            var user = await _repository.GetUserByIdAsync(id);
             return _presenter.Present(user);
         }
               

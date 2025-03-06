@@ -70,7 +70,8 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
 
         public async Task DeleteUserAsync(int id)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            var useTransactions = _context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory";
+            using (var transaction = useTransactions ? await _context.Database.BeginTransactionAsync() : null)
             {
                 try
                 {
@@ -86,19 +87,19 @@ namespace ToDo_Backend_InterfaceAdapters_Repository
                     if (user == null)
                         throw new KeyNotFoundException("User not found.");
                     _context.Users.Remove(user);
-                    await _context.SaveChangesAsync();                  
-                                       
-                    await transaction.CommitAsync();                   
+                    await _context.SaveChangesAsync();
+
+                    if (useTransactions) await transaction.CommitAsync();                   
                 }
                 catch (Exception)
                 {
-                    await transaction.RollbackAsync();
+                    if (useTransactions) await transaction.RollbackAsync();
                     throw;
                 }
             }
         }
 
-        public async Task<UserEntity> GetUserById(int id)
+        public async Task<UserEntity> GetUserByIdAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)

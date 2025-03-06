@@ -18,6 +18,6 @@ namespace ToDo_Backend_CA_AplicationLayer.UseCases.UserUseCases
             _repository = repository;
         }
 
-        public async Task<TEntity> ExecuteAsync(int id) => await _repository.GetUserById(id);        
+        public async Task<TEntity> ExecuteAsync(int id) => await _repository.GetUserByIdAsync(id);        
     }
 }
