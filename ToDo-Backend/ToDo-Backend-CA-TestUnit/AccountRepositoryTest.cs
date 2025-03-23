@@ -36,6 +36,103 @@ namespace ToDo_Backend_CA_TestUnit
         }
 
         [Fact]
+        public async Task CreateUser_ShouldReturnTrue_WhenUserOk()
+        {
+            // Arrange 
+            var user = new UserEntity
+            {
+                Id = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                IdentificationNumber = "123456789",
+                Country = "Ecuador",
+                City = "Quito",
+                Phone = "0987654321",
+                Email = "johndoe@example.com",
+                Password = "123456",
+                CreatedTasks = 0,
+                CompletedTasks = 0,
+                PublishedTasks = 0,
+                IsEmailConfirmed = false,
+                VerificationCode = null,
+                UpdateConfirmationCode = null,
+                IdRol = 1
+            };
+
+            // Act
+            var response = await _accountRepository.CreateUserAsync(user);
+
+            // Assert
+            Assert.True(response.Result);
+            Assert.Contains(response.User.IdentificationNumber, user.IdentificationNumber);            
+        }
+
+        [Fact]
+        public async Task Login_ShouldReturnTrue_WhenTrueCredentials()
+        {
+            // Arrange
+            var user = new UserEntity
+            {
+                Id = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                IdentificationNumber = "123456789",
+                Country = "Ecuador",
+                City = "Quito",
+                Phone = "0987654321",
+                Email = "johndoe@example.com",
+                Password = "123456",
+                CreatedTasks = 0,
+                CompletedTasks = 0,
+                PublishedTasks = 0,
+                IsEmailConfirmed = false,
+                VerificationCode = null,
+                UpdateConfirmationCode = null,
+                IdRol = 1
+            };
+
+            var userConfirmed = new UserEntity
+            {
+                Id = 2,
+                FirstName = "Coavas",
+                LastName = "Doe",
+                IdentificationNumber = "1354151435",
+                Country = "Ecuador",
+                City = "Quito",
+                Phone = "0987654321",
+                Email = "coavas@example.com",
+                Password = "123456",
+                CreatedTasks = 0,
+                CompletedTasks = 0,
+                PublishedTasks = 0,
+                IsEmailConfirmed = true,
+                VerificationCode = null,
+                UpdateConfirmationCode = null,
+                IdRol = 1
+            };
+
+            // Act
+            var userResponse = await _accountRepository.CreateUserAsync(user);
+            var authentication = await _accountRepository.LoginAsync(userResponse.User.Email, user.Password);
+            var authenticationIssue = await _accountRepository.LoginAsync("johndoeh@example.com", userResponse.User.Password);
+
+            var userResponseConfirmed = await _accountRepository.CreateUserAsync(userConfirmed);
+            var authenticationConfirmed = await _accountRepository.LoginAsync(userResponseConfirmed.User.Email, userConfirmed.Password);
+            var authenticationIssueConfirmed = await _accountRepository.LoginAsync("coavash@example.com", userResponseConfirmed.User.Password);
+
+            // Assert
+            Assert.True(!authentication.Result);
+            Assert.Equal(authentication.Errors, new List<string> { "Email needs to be confirmed" });
+            Assert.True(!authenticationIssue.Result);
+
+            Assert.Null(authenticationConfirmed.Errors);
+            Assert.True(authenticationConfirmed.Result);
+            Assert.True(!authenticationIssueConfirmed.Result);
+
+        }
+
+
+        [Fact]
         public async Task FindById_ShouldReturnNull_WhenUserNotFound()
         {
             // Arrange 

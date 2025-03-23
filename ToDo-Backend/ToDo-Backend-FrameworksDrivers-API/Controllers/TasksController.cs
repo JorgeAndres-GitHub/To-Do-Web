@@ -134,7 +134,7 @@ namespace ToDo_Backend_FrameworksDrivers_API.Controllers
         {
             var userId = GetUserIdService.GetUserId(User);
 
-            var taskIds = string.Join(", ", request.Ids);
+            var taskIds = string.Join(", ", request.Ids.Select(id => id.ToString().Replace("\n", "").Replace("\r", "")));
             _logger.LogInformation("Bulk delete user task with: User id: {UserId}, Tasks ids: {TaskIds}", userId, taskIds);
 
 
