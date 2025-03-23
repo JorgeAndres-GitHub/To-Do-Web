@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
+using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,8 @@ namespace ToDo_Backend_CA_TestUnit
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // BD separada por prueba
-                .Options;
+                .Options;          
+
 
             _context = new AppDbContext(options); // Ahora sí se puede instanciar
             _mockTaskRepository = new Mock<ITaskRepository<TaskItem>>(); // Se mantiene el mock
