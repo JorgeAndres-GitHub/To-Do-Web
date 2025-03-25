@@ -3,6 +3,7 @@
 *.suo
 *.user
 *.db
+*.txt
 
 # Archivos de compilación
 bin/

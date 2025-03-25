@@ -36,6 +36,61 @@ namespace ToDo_Backend_CA_TestUnit
         }
 
         [Fact]
+        public async Task UpdateUser_ShouldChangeUser_WhenUserExist()
+        {
+            // Arrange
+            var user = new UserEntity
+            {
+                Id = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                IdentificationNumber = "123456789",
+                Country = "Ecuador",
+                City = "Quito",
+                Phone = "0987654321",
+                Email = "johndoe@example.com",
+                Password = "123456",
+                CreatedTasks = 0,
+                CompletedTasks = 0,
+                PublishedTasks = 0,
+                IsEmailConfirmed = false,
+                VerificationCode = null,
+                UpdateConfirmationCode = null,
+                IdRol = 1
+            };
+
+            var userUpdated = new UserEntity
+            {
+                Id = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                IdentificationNumber = "123456789",
+                Country = "Colombia",
+                City = "Cartagena",
+                Phone = "0987654321",
+                Email = "johndoe@example.com",
+                Password = "123456",
+                CreatedTasks = 0,
+                CompletedTasks = 0,
+                PublishedTasks = 0,
+                IsEmailConfirmed = false,
+                VerificationCode = null,
+                UpdateConfirmationCode = null,
+                IdRol = 1
+            };
+
+
+            // Act
+            var response = await _accountRepository.CreateUserAsync(user);
+            await _accountRepository.UpdateUserAsync(userUpdated);
+            var newDbUser = await _accountRepository.GetUserByIdAsync(user.Id);
+
+            // Assert
+            Assert.NotEqual(user.Country, newDbUser.Country);
+            Assert.NotEqual(user.City, newDbUser.City);
+        }
+
+        [Fact]
         public async Task CreateUser_ShouldReturnTrue_WhenUserOk()
         {
             // Arrange 
